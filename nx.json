@@ -28,7 +28,8 @@
       "plugin": "@nx/jest/plugin",
       "options": {
         "targetName": "test"
-      }
+      },
+      "exclude": ["apps/matcher-e2e/**/*"]
     },
     {
       "plugin": "@nx/eslint/plugin",
@@ -45,5 +46,12 @@
       }
     }
   },
-  "nxCloudAccessToken": "YTc0MGUxOGUtNzMxYS00ZGU3LThjNTMtOWZiODRlMzVkYjA2fHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "YTc0MGUxOGUtNzMxYS00ZGU3LThjNTMtOWZiODRlMzVkYjA2fHJlYWQtd3JpdGU=",
+  "targetDefaults": {
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    }
+  }
 }

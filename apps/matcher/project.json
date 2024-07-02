@@ -1,0 +1,56 @@
+{
+  "name": "matcher",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/matcher/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/apps/matcher",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "apps/matcher/src/main.ts",
+        "tsConfig": "apps/matcher/tsconfig.app.json",
+        "assets": ["apps/matcher/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "matcher:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "matcher:build:development"
+        },
+        "production": {
+          "buildTarget": "matcher:build:production"
+        }
+      }
+    }
+  }
+}

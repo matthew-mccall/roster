@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@clerk/nextjs": "^5.2.0",
     "@typegoose/typegoose": "^12.5.0",
     "axios": "^1.6.0",
     "mongoose": "^8.4.4",

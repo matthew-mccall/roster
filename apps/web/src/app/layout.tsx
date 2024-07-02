@@ -1,4 +1,5 @@
 import './global.css';
+import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 
 export const metadata = {
   title: 'Welcome to web',
@@ -11,8 +12,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    <ClerkProvider>
     <html lang="en">
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
       <body>{children}</body>
     </html>
+    </ClerkProvider>
   );
 }

@@ -1,5 +1,6 @@
-import './global.css';
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
+import './global.scss';
+import { ClerkProvider } from '@clerk/nextjs';
+import NavigationBar from '../components/NavigationBar';
 
 export const metadata = {
   title: 'Welcome to web',
@@ -14,13 +15,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en">
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-      <body>{children}</body>
+      <body>
+      <div className={"d-flex flex-column vh-100"}>
+        <NavigationBar />
+      {children}
+      </div>
+      </body>
     </html>
     </ClerkProvider>
   );

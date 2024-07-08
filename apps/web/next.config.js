@@ -12,6 +12,8 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  experimental: {
+    serverComponentsExternalPackages:['mongoose','@typegoose/typegoose']  }
 };
 
 const plugins = [

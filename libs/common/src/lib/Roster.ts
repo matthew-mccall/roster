@@ -1,7 +1,7 @@
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { prop, Ref } from '@typegoose/typegoose';
 import { Account } from './Account';
 
-class RosterEntry
+export class RosterEntry
 {
   @prop({ required: true, ref: () => Account })
   public account!: Ref<Account>;
@@ -15,5 +15,3 @@ export class Roster
   @prop({ required: true, type: () => [RosterEntry] })
   public entries!: RosterEntry[];
 }
-
-export const RosterModel = getModelForClass(Roster)

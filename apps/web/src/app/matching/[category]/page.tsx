@@ -1,18 +1,14 @@
-'use client'
-
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json'
-import { notFound, usePathname } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 export default function Matching({ params }: { params: { category: string } })
 {
-  const categoryRoutes = Object.entries(categories).map(([key, value]) => {
-    return `/matching/${value.route}`
+  const categoryRoutes = Object.entries(categories).map(([, value]) => {
+    return value.route
   })
 
-  const pathname = usePathname();
-
-  if (!categoryRoutes.includes(pathname)) {
+  if (!categoryRoutes.includes(params.category)) {
     notFound()
   }
 

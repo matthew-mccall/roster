@@ -1,6 +1,9 @@
 import './global.scss';
 import { ClerkProvider } from '@clerk/nextjs';
 import React from 'react';
+import NavigationBar from '../components/NavigationBar';
+import VerticalCenter from '../components/VerticalCenter';
+import Container from 'react-bootstrap/Container';
 
 export const metadata = {
   title: 'Roster',
@@ -13,7 +16,14 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
       <html lang="en">
       <body>
       <div className={'d-flex flex-column vh-100'}>
-        {children}
+        <NavigationBar />
+        <div className={'h-100'}>
+          <VerticalCenter>
+            <Container>
+              {children}
+            </Container>
+          </VerticalCenter>
+        </div>
       </div>
       </body>
       </html>

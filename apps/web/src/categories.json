@@ -12,7 +12,7 @@
   "Friends": {
     "icon": "bi-people",
     "route": "friends",
-    "description": "Looking for a friend? You can find friends based on shared interests, hobbies, or experiences. Whether you're looking for someone to go to concerts with, enjoy outdoor adventures, or simply have a good conversation, our friend matching feature can help you find the perfect companion."
+    "description": "Looking for a friend? Whether you're looking for someone to go to concerts with, enjoy outdoor adventures, or simply have a good conversation, our friend matching feature can help you find the perfect companion."
   },
   "Study Groups": {
     "icon": "bi-mortarboard",

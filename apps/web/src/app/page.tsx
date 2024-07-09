@@ -1,11 +1,7 @@
-import VerticalCenter from '../components/VerticalCenter';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import Link from 'next/link';
-import NavigationBarBase from '../components/NavigationBar/NavigationBarBase';
-import NavigationBarBaseLayout from '../components/NavigationBarBaseLayout';
-import { Card, CardBody, CardText, CardTitle, Col, ListGroup, ListGroupItem, Row, Stack } from 'react-bootstrap';
+import { Card, CardBody, CardText, CardTitle, Col, Row, Stack } from 'react-bootstrap';
 import categories from '../categories.json';
 
 export default function Index() {
@@ -15,7 +11,7 @@ export default function Index() {
    * Note: The corresponding styles are in the ./index.scss file.
    */
   return (
-    <NavigationBarBaseLayout>
+    <>
       <SignedOut>
         <div className={'text-center'}>
           <h1 className={'fw-semibold display-1'}>Are <span className={'fst-italic'}>you</span> on the <span
@@ -52,6 +48,6 @@ export default function Index() {
           }
         </Row>
       </SignedIn>
-    </NavigationBarBaseLayout>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import './global.scss';
 import { ClerkProvider } from '@clerk/nextjs';
-import NavigationBar from '../components/NavigationBar';
+import NavigationBarBase from '../components/NavigationBar/NavigationBarBase';
 
 export const metadata = {
   title: 'Welcome to web',
@@ -17,7 +17,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
       <div className={"d-flex flex-column vh-100"}>
-        <NavigationBar />
       {children}
       </div>
       </body>

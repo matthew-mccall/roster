@@ -12,7 +12,7 @@ export default function MatchingPage()
         <Row xs={1} lg={4} className="g-4">
           {
             Object.entries(categories).map(([key, value]) => (
-              <Col>
+              <Col key={key}>
                 <Card className={"h-100"}>
                   <CardBody>
                     <div className="py-5 text-center text-primary">

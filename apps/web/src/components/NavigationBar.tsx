@@ -1,38 +1,41 @@
 'use client';
 
 import { SignedIn, UserButton } from '@clerk/nextjs';
-import { IconedNavLink } from './IconedNavLink';
+import LabelledIcon from './LabelledIcon';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import categories from '../categories.json';
 import GeneralProfile from './Profiles/GeneralProfile';
 import RoommateProfile from './Profiles/RoommateProfile';
 import DatingProfile from './Profiles/DatingProfile';
+import { Navbar, NavbarBrand, NavbarToggle, NavbarCollapse, Nav, NavLink, NavItem } from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
 
 export default function NavigationBar() {
   const pathname = usePathname();
 
-  // For some reason the Navbar component doesn't work
   return (
-    <nav className="navbar navbar-expand-lg">
-      <div className="container">
-        <a className="navbar-brand" href="/">Roster</a>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
+    <Navbar expand="lg">
+      <Container>
+        <Link href="/" passHref legacyBehavior>
+          <NavbarBrand>Roster</NavbarBrand>
+        </Link>
+        <NavbarToggle aria-controls="navbar-nav" />
         <SignedIn>
-          <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div className="navbar-nav nav-underline mx-auto">
+          <NavbarCollapse id="navbar-nav">
+            <Nav variant="underline" className="flex-grow-1 justify-content-center" activeKey={pathname}>
               {
                 Object.entries(categories).map(([key, value]) => (
-                  <Link href={`/matching/${value.route}`} passHref legacyBehavior key={key}>
-                    <IconedNavLink className={`nav-link ${pathname === `/matching/${value.route}` ? 'active' : ''}`}
-                                   aria-current="page" icon={value.icon}>{key}</IconedNavLink>
-                  </Link>
+                  <NavItem key={key}>
+                    <Link href={`/matching/${value.route}`} passHref legacyBehavior>
+                      <NavLink>
+                        <LabelledIcon icon={value.icon}>{key}</LabelledIcon>
+                      </NavLink>
+                    </Link>
+                  </NavItem>
                 ))
               }
-            </div>
+            </Nav>
             <UserButton>
               <UserButton.UserProfilePage
                 label="General Profile"
@@ -56,9 +59,9 @@ export default function NavigationBar() {
                 <DatingProfile />
               </UserButton.UserProfilePage>
             </UserButton>
-          </div>
+          </NavbarCollapse>
         </SignedIn>
-      </div>
-    </nav>
+      </Container>
+    </Navbar>
   );
 }

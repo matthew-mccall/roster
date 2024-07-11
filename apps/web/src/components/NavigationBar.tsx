@@ -49,7 +49,7 @@ export default function NavigationBar() {
                   ))
                 }
               </Nav>
-              <div className={'d-none d-lg-flex'}>
+              <div className={'align-self-center d-none d-lg-flex'}>
                 <UserButton />
               </div>
             </OffcanvasBody>

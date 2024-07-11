@@ -15,15 +15,13 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
     <ClerkProvider>
       <html lang="en">
       <body>
-      <div className={'d-flex flex-column vh-100'}>
+      <div className={'d-flex flex-column min-vh-100'}>
         <NavigationBar />
-        <div className={'h-100'}>
-          <VerticalCenter>
-            <Container>
-              {children}
-            </Container>
-          </VerticalCenter>
-        </div>
+        <VerticalCenter>
+          <Container>
+            {children}
+          </Container>
+        </VerticalCenter>
       </div>
       </body>
       </html>

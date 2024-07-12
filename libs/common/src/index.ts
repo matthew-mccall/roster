@@ -1,9 +1,11 @@
 import { getModelForClass } from '@typegoose/typegoose';
 import { Account } from './lib/Account';
 import { Roster, RosterEntry } from './lib/Roster';
-import { RoommateProfile } from './lib/Profile/RoommateProfile';
 import { GeneralProfile } from './lib/Profile/GeneralProfile';
+import { RoommateProfile } from './lib/Profile/RoommateProfile';
 import { DatingProfile } from './lib/Profile/DatingProfile';
+
+export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile }
 
 export const GeneralProfileModel = getModelForClass(GeneralProfile);
 export const RoommateProfileModel = getModelForClass(RoommateProfile);

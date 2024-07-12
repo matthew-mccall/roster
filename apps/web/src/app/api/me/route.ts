@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth } from "@clerk/nextjs/server";
 import { AccountModel } from '@roster/common';
 import dbConnect from '../../../db';
 
@@ -17,7 +17,8 @@ export async function GET() {
 
   if (!account) {
     account = await AccountModel.create({ _id: userId });
+    await account.save()
   }
 
-  return NextResponse.json({ account }, { status: 200 });
+  return NextResponse.json(account, { status: 200 });
 }

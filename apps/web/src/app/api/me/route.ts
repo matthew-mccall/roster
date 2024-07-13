@@ -6,11 +6,7 @@ import dbConnect from '../../../db';
 export async function GET() {
   const mongoose = dbConnect()
   // Get the userId from auth() -- if null, the user is not signed in
-  const { userId } = auth();
-
-  if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  const { userId } = auth().protect();
 
   await mongoose;
   let account = await AccountModel.findById(userId).exec()

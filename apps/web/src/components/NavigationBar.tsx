@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { SignedIn } from '@clerk/nextjs';
 import LabelledIcon from './LabelledIcon';
 import { usePathname } from 'next/navigation';
@@ -20,11 +21,14 @@ import UserButton from './UserButton';
 export default function NavigationBar() {
   const pathname = usePathname();
 
+  // Easter egg because Arthur
+  const wordmark = useMemo(() => Math.random() < 0.01 ? "Roster? I hardly know her!" : "Roster", []);
+
   return (
     <Navbar expand="lg" sticky="top" bg={"body"}>
       <Container>
         <Link href="/" passHref legacyBehavior>
-          <NavbarBrand>Roster</NavbarBrand>
+          <NavbarBrand suppressHydrationWarning>{wordmark}</NavbarBrand>
         </Link>
         <SignedIn>
           <div className={'ms-auto me-2 d-flex d-lg-none'}>

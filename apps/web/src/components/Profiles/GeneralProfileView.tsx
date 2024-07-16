@@ -1,16 +1,19 @@
 import { GeneralProfile } from '@roster/common';
-import { Form, FormControl, FormGroup, FormLabel, FormSelect } from 'react-bootstrap';
+import { Alert, Form, FormControl, FormGroup, FormLabel, FormSelect } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import updateGeneralProfile from '../../actions/updateGeneralProfile';
 
 export default function GeneralProfileView({ generalProfile }: { generalProfile?: GeneralProfile }) {
 
-  if (!generalProfile) {
-    return null;
+  if (process.env.NODE_ENV !== 'development') {
+    if (!generalProfile) {
+      // TODO: Redirect to '/' and display questionnaire
+      return (
+        <Alert variant="danger" className={"mt-4"}>Failed to get general profile data</Alert>);
+    }
   }
 
-  const {name, gender} = generalProfile
-  console.log(generalProfile);
+  const {name, gender} = generalProfile ?? { name: "John Doe", gender: 3 }
 
   return (
     <>

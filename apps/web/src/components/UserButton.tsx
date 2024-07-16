@@ -7,13 +7,26 @@ import { UserButton as ClerkUserButton } from '@clerk/nextjs';
 import useSWR from 'swr';
 import fetcher from '../fetcher';
 import { Account } from '@roster/common';
+import { Spinner } from 'react-bootstrap';
 
-export default function UserButton()
-{
-  const { data, error, isLoading } = useSWR('/api/me', fetcher)
-  if (error || isLoading) return null;
+export default function UserButton() {
+  const { data, error, isLoading } = useSWR('/api/me', fetcher);
 
-  const { generalProfile, roommateProfile, datingProfile } = data as Account
+  if (isLoading) {
+    return (
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    );
+  }
+
+  if (error) {
+    return (
+      <i className={"text-danger bi-exclamation-triangle"} />
+    )
+  }
+
+  const { generalProfile, roommateProfile, datingProfile } = data as Account;
 
   return (
     <ClerkUserButton>
@@ -39,5 +52,5 @@ export default function UserButton()
         <DatingProfileView datingProfile={datingProfile} />
       </ClerkUserButton.UserProfilePage>
     </ClerkUserButton>
-  )
+  );
 }

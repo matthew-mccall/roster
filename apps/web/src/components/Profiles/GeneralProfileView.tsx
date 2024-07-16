@@ -1,7 +1,7 @@
 import { GeneralProfile } from '@roster/common';
 import { Alert, Form, FormControl, FormGroup, FormLabel, FormSelect } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
 import updateGeneralProfile from '../../actions/updateGeneralProfile';
+import SubmitButton from '../SubmitButton';
 
 export default function GeneralProfileView({ generalProfile }: { generalProfile?: GeneralProfile }) {
 
@@ -33,9 +33,9 @@ export default function GeneralProfileView({ generalProfile }: { generalProfile?
             <option value={3}>Neither</option>
           </FormSelect>
         </FormGroup>
-        <Button variant="primary" type="submit">
+        <SubmitButton variant="primary" type="submit">
           Save
-        </Button>
+        </SubmitButton>
       </Form>
     </>
   )

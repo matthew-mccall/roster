@@ -24,9 +24,6 @@ export default async function updateGeneralProfile(formData: FormData)
     return;
   }
 
-  account.generalProfile = new GeneralProfileModel();
-  account.generalProfile.name = formName
-  account.generalProfile.gender = formGender;
-
+  account.generalProfile = new GeneralProfileModel({ name: formName, gender: formGender });
   await account.save();
 }

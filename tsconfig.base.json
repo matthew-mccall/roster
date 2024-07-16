@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@roster/common": ["libs/common/src/index.ts"]
+      "@roster/common": ["libs/common/src/index.ts"],
+      "@roster/common/*": ["libs/common/src/*.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

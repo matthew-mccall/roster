@@ -13,6 +13,7 @@ const nextConfig = {
     svgr: false,
   },
   experimental: {
+    esmExternals: "loose",
     serverComponentsExternalPackages:['mongoose','@typegoose/typegoose']  }
 };
 

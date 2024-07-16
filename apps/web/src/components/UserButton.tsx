@@ -13,7 +13,7 @@ export default function UserButton()
   const { data, error, isLoading } = useSWR('/api/me', fetcher)
   if (error || isLoading) return null;
 
-  const { _id, generalProfile, roommateProfile, datingProfile } = data as Account
+  const { generalProfile, roommateProfile, datingProfile } = data as Account
 
   return (
     <ClerkUserButton>

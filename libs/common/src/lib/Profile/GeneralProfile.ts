@@ -6,6 +6,6 @@ export class GeneralProfile
   @prop({ required: true })
   public name!: string;
 
-  @prop({ required: true, enum: Gender })
+  @prop({ required: true, type: Number })
   public gender!: Gender;
 }

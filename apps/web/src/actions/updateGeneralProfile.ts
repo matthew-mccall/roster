@@ -2,8 +2,8 @@
 
 import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
-import { AccountModel, GeneralProfile } from '@roster/common';
-import { Gender } from '@roster/common/Gender';
+import { AccountModel, GeneralProfileModel } from '@roster/common';
+import { Gender } from '@roster/common';
 
 export default async function updateGeneralProfile(formData: FormData)
 {
@@ -24,7 +24,7 @@ export default async function updateGeneralProfile(formData: FormData)
     return;
   }
 
-  account.generalProfile = new GeneralProfile();
+  account.generalProfile = new GeneralProfileModel();
   account.generalProfile.name = formName
   account.generalProfile.gender = formGender;
 

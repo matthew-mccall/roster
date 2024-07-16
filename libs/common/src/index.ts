@@ -4,8 +4,9 @@ import { Roster, RosterEntry } from './lib/Roster';
 import { GeneralProfile } from './lib/Profile/GeneralProfile';
 import { RoommateProfile } from './lib/Profile/RoommateProfile';
 import { DatingProfile } from './lib/Profile/DatingProfile';
+import { Gender } from './Gender';
 
-export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile }
+export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, Gender }
 
 export const GeneralProfileModel = getModelForClass(GeneralProfile);
 export const RoommateProfileModel = getModelForClass(RoommateProfile);

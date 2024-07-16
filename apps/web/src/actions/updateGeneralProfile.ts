@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
 import { AccountModel, GeneralProfileModel } from '@roster/common';
 import { Gender } from '@roster/common';
+import { revalidatePath } from 'next/cache';
 
 export default async function updateGeneralProfile(formData: FormData)
 {
@@ -26,4 +27,6 @@ export default async function updateGeneralProfile(formData: FormData)
 
   account.generalProfile = new GeneralProfileModel({ name: formName, gender: formGender });
   await account.save();
+
+  revalidatePath('/')
 }

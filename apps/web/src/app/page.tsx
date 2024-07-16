@@ -1,15 +1,13 @@
 import Button from 'react-bootstrap/Button';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
-import Link from 'next/link';
-import { Card, CardBody, CardText, CardTitle, Col, Row, Stack } from 'react-bootstrap';
-import categories from '../categories.json';
+import GeneralProfileQuestionnaire from '../components/Questionnaires/GeneralProfileQuestionnaire';
+import getOrCreateAccount from '../lib/getOrCreateAccount';
+import CategorySelection from '../components/CategorySelection';
 
-export default function Index() {
-  /*
-   * Replace the elements below with your own.
-   *
-   * Note: The corresponding styles are in the ./index.scss file.
-   */
+export default async function Index() {
+  const account = await getOrCreateAccount();
+  const { generalProfile } = account;
+
   return (
     <>
       <SignedOut>
@@ -25,28 +23,11 @@ export default function Index() {
         </div>
       </SignedOut>
       <SignedIn>
-        <Row xs={1} lg={4} className="g-4">
-          {
-            Object.entries(categories).map(([key, value]) => (
-              <Col key={key}>
-                <Card className={'h-100'}>
-                  <CardBody>
-                    <Stack className={"h-100"}>
-                      <div className="py-5 text-center text-primary">
-                        <i className={`display-3 ${value.icon}`} />
-                      </div>
-                      <CardTitle>{key}</CardTitle>
-                      <CardText>{value.description}</CardText>
-                      <Link href={`/matching/${value.route}`} className={'btn btn-primary mt-auto stretched-link'}>
-                        Go
-                      </Link>
-                    </Stack>
-                  </CardBody>
-                </Card>
-              </Col>
-            ))
-          }
-        </Row>
+        {
+          generalProfile
+            ? <CategorySelection />
+            : <GeneralProfileQuestionnaire />
+        }
       </SignedIn>
     </>
   );

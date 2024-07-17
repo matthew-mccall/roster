@@ -15,7 +15,7 @@ export default function GeneralProfileQuestionnaire() {
         </FormGroup>
 
         <FormGroup className="mb-3" controlId="formGender">
-          <FormLabel>Password</FormLabel>
+          <FormLabel>Gender Identity</FormLabel>
           <FormSelect aria-label="Default select example" name={"formGender"}>
             <option value={0}>Prefer not to say</option>
             <option value={1}>Male</option>

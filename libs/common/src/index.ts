@@ -5,12 +5,18 @@ import { GeneralProfile } from './lib/Profile/GeneralProfile';
 import { RoommateProfile } from './lib/Profile/RoommateProfile';
 import { DatingProfile } from './lib/Profile/DatingProfile';
 import { Gender } from './Gender';
+import {Guests} from './Guests';
+import {SleepTime} from './SleepTime';
+import { FriendsProfile } from './lib/Profile/FriendsProfile';
+import { StudyProfile } from './lib/Profile/StudyProfile';
 
-export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, Gender }
+export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, SleepTime }
 
 export const GeneralProfileModel = getModelForClass(GeneralProfile);
 export const RoommateProfileModel = getModelForClass(RoommateProfile);
 export const DatingProfileModel = getModelForClass(DatingProfile);
+export const FriendsProfileModel = getModelForClass(FriendsProfile);
+export const StudyProfileModel = getModelForClass(StudyProfile);
 export const AccountModel = getModelForClass(Account)
 export const RosterEntryModel = getModelForClass(RosterEntry)
 export const RosterModel = getModelForClass(Roster)

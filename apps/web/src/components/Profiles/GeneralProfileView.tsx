@@ -14,7 +14,7 @@ export default function GeneralProfileView({ generalProfile }: { generalProfile?
     }
   }
 
-  const {name, gender} = generalProfile ?? { name: "", gender: 0 }
+  const {name, gender, interests, dislikes} = generalProfile ?? { name: "", gender: 0, interests: ["","",""], dislikes: ["","",""] }
 
   return (
     <>
@@ -35,6 +35,18 @@ export default function GeneralProfileView({ generalProfile }: { generalProfile?
             <option value={3}>Neither</option>
           </FormSelect>
         </FormGroup>
+        <FormGroup className="mb-3" controlId="formInterests">
+          <FormLabel>Enter up to 3 of your top hobbies and interests:</FormLabel>
+          <FormControl placeholder="Hobby/Interest" defaultValue={interests[0] ? interests[0]:""} name="formInterest0" />
+          <FormControl placeholder="Hobby/Interest" defaultValue={interests[1] ? interests[1]:""} name="formInterest1" />
+          <FormControl placeholder="Hobby/Interest" defaultValue={interests[2] ? interests[2]:""} name="formInterest2" />
+        </FormGroup>
+      <FormGroup className="mb-3" controlId="formDislikes">
+        <FormLabel>Enter up to 3 of your dislikes:</FormLabel>
+        <FormControl placeholder="Dislike" defaultValue={dislikes[0]} name="formDislikes0" />
+        <FormControl placeholder="Dislike" defaultValue={dislikes[1]} name="formDislikes1" />
+        <FormControl placeholder="Dislike" defaultValue={dislikes[2]} name="formDislikes2" />
+      </FormGroup>
         <SubmitButton variant="primary" type="submit">
           Save
         </SubmitButton>

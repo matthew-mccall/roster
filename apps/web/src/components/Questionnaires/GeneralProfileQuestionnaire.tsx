@@ -23,6 +23,18 @@ export default function GeneralProfileQuestionnaire() {
             <option value={3}>Neither</option>
           </FormSelect>
         </FormGroup>
+        <FormGroup className="mb-3" controlId="formInterests">
+          <FormLabel>Enter up to 3 of your top hobbies and interests:</FormLabel>
+          <FormControl placeholder="Hobby/Interest"  name="formInterest0" />
+          <FormControl placeholder="Hobby/Interest"  name="formInterest1" />
+          <FormControl placeholder="Hobby/Interest"  name="formInterest2" />
+        </FormGroup>
+        <FormGroup className="mb-3" controlId="formDislikes">
+          <FormLabel>Enter up to 3 of your dislikes:</FormLabel>
+          <FormControl placeholder="Dislike"  name="formDislikes0" />
+          <FormControl placeholder="Dislike"  name="formDislikes1" />
+          <FormControl placeholder="Dislike"  name="formDislikes2" />
+        </FormGroup>
         <SubmitButton variant="primary" type="submit">
           Save
         </SubmitButton>

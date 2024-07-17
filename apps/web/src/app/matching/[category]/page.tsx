@@ -26,7 +26,7 @@ export default async function Matching({ params }: { params: { category: string 
     return;
   }
 
-  console.log(params.category);
+  // console.log(params.category);
 
   if (params.category === "roommates") {
     if (!account.roommateProfile) {

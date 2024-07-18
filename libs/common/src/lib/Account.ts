@@ -1,4 +1,4 @@
-import { getModelForClass, prop } from '@typegoose/typegoose';
+import { prop } from '@typegoose/typegoose';
 import { DatingProfile } from './Profile/DatingProfile';
 import { GeneralProfile } from './Profile/GeneralProfile';
 import { RoommateProfile } from './Profile/RoommateProfile';
@@ -17,5 +17,3 @@ export class Account
   @prop({ type: () => DatingProfile})
   public datingProfile?: DatingProfile;
 }
-
-export const AccountModel = getModelForClass(Account)

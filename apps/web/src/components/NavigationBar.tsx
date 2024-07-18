@@ -1,32 +1,65 @@
-import { SignedIn, UserButton } from '@clerk/nextjs';
-import { ButtonGroup } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
-import IconedButton from './IconedButton';
+'use client';
+
+import { useMemo } from 'react';
+import { SignedIn } from '@clerk/nextjs';
+import LabelledIcon from './LabelledIcon';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import categories from '../categories.json';
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarToggle,
+  Nav,
+  NavLink,
+  NavItem,
+  NavbarOffcanvas, OffcanvasHeader, OffcanvasTitle, OffcanvasBody
+} from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
+import UserButton from './UserButton';
 
 export default function NavigationBar() {
-  // For some reason the Navbar component doesn't work
+  const pathname = usePathname();
+
+  // Easter egg because Arthur
+  const wordmark = useMemo(() => Math.random() < 0.01 ? "Roster? I hardly know her!" : "Roster", []);
+
   return (
-    <nav className="navbar navbar-expand-lg">
-      <div className="container">
-        <a className="navbar-brand" href="#">Roster</a>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <SignedIn>
-              <div className="navbar-nav mx-auto">
-                <ButtonGroup aria-label="Basic example">
-                  <IconedButton icon={"bi-building"} variant="outline-primary">Roomates</IconedButton>
-                  <IconedButton icon={"bi-clipboard-heart"} variant="outline-primary">Dating</IconedButton>
-                  <IconedButton icon={"bi-people"} variant="outline-primary">Friends</IconedButton>
-                  <IconedButton icon={"bi-mortarboard"} variant="outline-primary">Study Group</IconedButton>
-                </ButtonGroup>
+    <Navbar expand="lg" sticky="top" bg={"body"}>
+      <Container>
+        <Link href="/" passHref legacyBehavior>
+          <NavbarBrand suppressHydrationWarning>{wordmark}</NavbarBrand>
+        </Link>
+        <SignedIn>
+          <div className={'ms-auto me-2 d-flex d-lg-none'}>
+            <UserButton />
+          </div>
+          <NavbarToggle aria-controls="navbar-nav" />
+          <NavbarOffcanvas id="navbar-nav" placement={"end"}>
+            <OffcanvasHeader closeButton>
+              <OffcanvasTitle>Menu</OffcanvasTitle>
+            </OffcanvasHeader>
+            <OffcanvasBody>
+              <Nav variant="underline" className="flex-grow-1 justify-content-center" activeKey={pathname}>
+                {
+                  Object.entries(categories).map(([key, value]) => (
+                    <NavItem key={key}>
+                      <Link href={`/matching/${value.route}`} passHref legacyBehavior>
+                        <NavLink>
+                          <LabelledIcon icon={value.icon}>{key}</LabelledIcon>
+                        </NavLink>
+                      </Link>
+                    </NavItem>
+                  ))
+                }
+              </Nav>
+              <div className={'align-self-center d-none d-lg-flex'}>
+                <UserButton />
               </div>
-              <UserButton />
-            </SignedIn>
-        </div>
-      </div>
-    </nav>
+            </OffcanvasBody>
+          </NavbarOffcanvas>
+        </SignedIn>
+      </Container>
+    </Navbar>
   );
 }

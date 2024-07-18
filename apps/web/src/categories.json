@@ -1,0 +1,22 @@
+{
+  "Roommates": {
+    "icon": "bi-building",
+    "route": "roommates",
+    "description": "Looking for roommates? Our roommate matching feature allows you to connect with individuals who are also in search of a roommate. Whether you're looking to share a burden of rent or just want someone for company, we've got you covered."
+  },
+  "Dating": {
+    "icon": "bi-clipboard-heart",
+    "route": "dating",
+    "description": "Looking for a significant other? Our aim is to make your search for the perfect partner as easy and effective as possible. Whether you're looking for love, companionship, or just someone to share a cup of coffee with, our dating feature can help you find the one."
+  },
+  "Friends": {
+    "icon": "bi-people",
+    "route": "friends",
+    "description": "Looking for a friend? Whether you're looking for someone to go to concerts with, enjoy outdoor adventures, or simply have a good conversation, our friend matching feature can help you find the perfect companion."
+  },
+  "Study Groups": {
+    "icon": "bi-mortarboard",
+    "route": "study",
+    "description": "Looking for a study group? Whether you need help in a particular subject, want to collaborate on projects, or seek a stimulating academic discussion, we can match you with the perfect study group."
+  }
+}

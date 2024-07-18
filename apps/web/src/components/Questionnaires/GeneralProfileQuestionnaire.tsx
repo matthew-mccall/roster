@@ -3,11 +3,18 @@
 import { Form, FormControl, FormGroup, FormLabel, FormSelect } from 'react-bootstrap';
 import updateGeneralProfile from '../../actions/updateGeneralProfile';
 import SubmitButton from '../SubmitButton';
+import { GeneralProfile } from '@roster/common';
 
-export default function GeneralProfileQuestionnaire() {
+export default function GeneralProfileQuestionnaire({ generalProfile }: { generalProfile?: GeneralProfile }) {
+
+  let name, gender;
+
+  if (generalProfile) {
+    ({ name, gender } = generalProfile);
+  }
+
   return (
     <>
-      <h1>Let&apos;s get you started...</h1>
       <Form action={updateGeneralProfile}>
         <FormGroup className="mb-3" controlId="formFullName">
           <FormLabel>Full Name</FormLabel>

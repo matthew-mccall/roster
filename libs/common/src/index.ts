@@ -4,11 +4,11 @@ import { Roster, RosterEntry } from './lib/Roster';
 import { GeneralProfile } from './lib/Profile/GeneralProfile';
 import { RoommateProfile } from './lib/Profile/RoommateProfile';
 import { DatingProfile } from './lib/Profile/DatingProfile';
-import { Gender } from './Gender';
 import {Guests} from './Guests';
 import {SleepTime} from './SleepTime';
 import { FriendsProfile } from './lib/Profile/FriendsProfile';
 import { StudyProfile } from './lib/Profile/StudyProfile';
+import { Gender } from './lib/Gender';
 
 export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, SleepTime }
 

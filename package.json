@@ -5,7 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
-    "@clerk/nextjs": "^5.2.0",
+    "@clerk/nextjs": "^5.2.2",
     "@typegoose/typegoose": "^12.5.0",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.3",

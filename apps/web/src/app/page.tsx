@@ -6,7 +6,6 @@ import CategorySelection from '../components/CategorySelection';
 
 export default async function Index() {
   const account = await getOrCreateAccount();
-  const { generalProfile } = account;
 
   return (
     <>
@@ -24,9 +23,13 @@ export default async function Index() {
       </SignedOut>
       <SignedIn>
         {
-          generalProfile
+          account && account.generalProfile
             ? <CategorySelection />
-            : <GeneralProfileQuestionnaire />
+            :
+            <>
+              <h1>Let&apos;s get you started...</h1>
+              <GeneralProfileQuestionnaire />
+            </>
         }
       </SignedIn>
     </>

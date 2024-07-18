@@ -4,7 +4,7 @@ import { Roster, RosterEntry } from './lib/Roster';
 import { GeneralProfile } from './lib/Profile/GeneralProfile';
 import { RoommateProfile } from './lib/Profile/RoommateProfile';
 import { DatingProfile } from './lib/Profile/DatingProfile';
-import { Gender } from './Gender';
+import { Gender } from './lib/Gender';
 
 export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, Gender }
 

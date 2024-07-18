@@ -1,6 +1,9 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json'
 import { notFound } from 'next/navigation';
+import { Card, CardBody, Stack } from 'react-bootstrap';
+import { Account } from '@roster/common';
+import Button from 'react-bootstrap/Button';
 
 export default function Matching({ params }: { params: { category: string } })
 {
@@ -10,6 +13,30 @@ export default function Matching({ params }: { params: { category: string } })
 
   if (!categoryRoutes.includes(params.category)) {
     notFound()
+  }
+
+  let user1: Account, user2: Account;
+  // TODO: Fetch two random accounts from matching pool
+
+  async function submitPreference(userID: string) {
+    'use server'
+    // TODO: Calculate ELO, update roster entries
+  }
+
+  if (user1 && user2) {
+    return (
+      <Stack direction={"horizontal"} gap={3} className={'justify-content-center'}>
+        {
+          [user1, user2].map((account, key) => (
+            <Card key={key}>
+              <CardBody>
+                <Button onClick={() => submitPreference(account._id)}>Like</Button>
+              </CardBody>
+            </Card>
+          ))
+        }
+      </Stack>
+    )
   }
 
   return (

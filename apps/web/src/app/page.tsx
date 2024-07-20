@@ -4,12 +4,13 @@ import GeneralProfileQuestionnaire from '../components/Questionnaires/GeneralPro
 import getOrCreateAccount from '../lib/getOrCreateAccount';
 import CategorySelection from '../components/CategorySelection';
 import { Stack } from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
 
 export default async function Index() {
   const account = await getOrCreateAccount();
 
   return (
-    <>
+    <Container>
       <SignedOut>
         <div className={'text-center'}>
           <h1 className={'fw-semibold display-1'}>Are <span className={'fst-italic'}>you</span> on the <span
@@ -39,6 +40,6 @@ export default async function Index() {
             </>
         }
       </SignedIn>
-    </>
+    </Container>
   );
 }

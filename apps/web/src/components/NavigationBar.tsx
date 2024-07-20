@@ -31,7 +31,7 @@ export default function NavigationBar() {
         </Link>
         <SignedIn>
           <div className={'ms-auto me-2 d-flex d-lg-none'}>
-            <UserButton />
+            <UserButton userProfileMode={"navigation"} userProfileUrl={"/me"} />
           </div>
           <NavbarToggle aria-controls="navbar-nav" />
           <NavbarOffcanvas id="navbar-nav" placement={"end"}>

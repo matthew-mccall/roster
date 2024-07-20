@@ -7,10 +7,11 @@ import RoommateProfileView from '../../../components/Profiles/RoommateProfileVie
 import DatingProfileView from '../../../components/Profiles/DatingProfileView';
 import useSWR from 'swr';
 import fetcher from '../../../fetcher';
-import { Spinner, Stack } from 'react-bootstrap';
+import { Alert, AlertLink, Spinner, Stack } from 'react-bootstrap';
 import { Account } from '@roster/common';
 import styles from './page.module.scss'
 import Container from 'react-bootstrap/Container';
+import Link from 'next/link';
 
 export default function MePage() {
   const { data, error, isLoading } = useSWR('/api/me', fetcher);
@@ -50,22 +51,29 @@ export default function MePage() {
           url="general"
           labelIcon={<i className="bi-clipboard-fill" />}
         >
-          <GeneralProfileView generalProfile={generalProfile} />
+          {generalProfile
+            ? <GeneralProfileView generalProfile={generalProfile} />
+            : <Alert variant={"secondary"}>Please complete the <Link href={"/"} passHref legacyBehavior><AlertLink>general questionnaire</AlertLink></Link> first</Alert>
+          }
         </UserProfile.Page>
         <ClerkUserButton.UserProfilePage
           label={`Roommates Profile`}
           url={categories.Roommates.route}
           labelIcon={<i className={`${categories.Roommates.icon}-fill`} />}
         >
-          <RoommateProfileView roommateProfile={roommateProfile} />
-        </ClerkUserButton.UserProfilePage>
+          {roommateProfile
+            ? <RoommateProfileView roommateProfile={roommateProfile} />
+            : <Alert variant={"secondary"}>Please complete the <Link href={`/matching/${categories.Roommates.route}`} passHref legacyBehavior><AlertLink>roommate questionnaire</AlertLink></Link> first</Alert>
+          }        </ClerkUserButton.UserProfilePage>
         <ClerkUserButton.UserProfilePage
           label={`Dating Profile`}
           url={categories.Dating.route}
           labelIcon={<i className={`${categories.Dating.icon}-fill`} />}
         >
-          <DatingProfileView datingProfile={datingProfile} />
-        </ClerkUserButton.UserProfilePage>
+          {datingProfile
+            ? <DatingProfileView datingProfile={datingProfile} />
+            : <Alert variant={"secondary"}>Please complete the <Link href={`/matching/${categories.Dating.route}`} passHref legacyBehavior><AlertLink>dating questionnaire</AlertLink></Link> first</Alert>
+          }        </ClerkUserButton.UserProfilePage>
       </UserProfile>
     </Container>
   )

@@ -1,3 +1,5 @@
+'use client'
+
 import { Form, FormControl, FormGroup, FormLabel, FormSelect } from 'react-bootstrap';
 import updateGeneralProfile from '../../actions/updateGeneralProfile';
 import SubmitButton from '../SubmitButton';

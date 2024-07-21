@@ -5,7 +5,7 @@ import updateGeneralProfile from '../../actions/updateGeneralProfile';
 import SubmitButton from '../SubmitButton';
 import { GeneralProfile } from '@roster/common';
 
-export default function GeneralProfileQuestionnaire({ generalProfile }: { generalProfile?: GeneralProfile }) {
+export default function GeneralProfileQuestionnaire({ generalProfile, pathToRevalidate }: { generalProfile?: GeneralProfile, pathToRevalidate?: string }) {
 
   let name, gender;
 
@@ -14,7 +14,7 @@ export default function GeneralProfileQuestionnaire({ generalProfile }: { genera
   }
 
   return (
-    <Form action={updateGeneralProfile}>
+    <Form action={formData => updateGeneralProfile(formData, pathToRevalidate)}>
       <FormGroup className="mb-3" controlId="formFullName">
         <FormLabel>Full Name</FormLabel>
         <FormControl placeholder="Enter your full name" name="formFullName" defaultValue={name} />

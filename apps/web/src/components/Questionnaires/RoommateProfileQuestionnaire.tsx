@@ -5,7 +5,7 @@ import SubmitButton from '../SubmitButton';
 import { RoommateProfile } from '@roster/common';
 import updateRoommateProfile from '../../actions/updateRoommateProfile';
 
-export default function RoommateProfileQuestionnaire({ roommateProfile }: { roommateProfile?: RoommateProfile }) {
+export default function RoommateProfileQuestionnaire({ roommateProfile, pathToRevalidate }: { roommateProfile?: RoommateProfile, pathToRevalidate?: string }) {
 
   let preferredBedtime;
 
@@ -14,7 +14,7 @@ export default function RoommateProfileQuestionnaire({ roommateProfile }: { room
   }
 
   return (
-    <Form action={updateRoommateProfile}>
+    <Form action={formData => updateRoommateProfile(formData, pathToRevalidate)}>
       <FormGroup className="mb-3" controlId="formPreferredBedtime">
         <FormLabel>What time do you normally go to sleep?</FormLabel>
         <FormControl name="formPreferredBedtime" type={"time"} defaultValue={preferredBedtime} />

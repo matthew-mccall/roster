@@ -36,7 +36,7 @@ export default async function Index() {
             :
             <>
               <h1>Let&apos;s get you started...</h1>
-              <GeneralProfileQuestionnaire />
+              <GeneralProfileQuestionnaire pathToRevalidate={'/'} />
             </>
         }
       </SignedIn>

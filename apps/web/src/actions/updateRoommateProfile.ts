@@ -3,8 +3,9 @@
 import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
 import { AccountModel, RoommateProfileModel, RosterModel } from '@roster/common';
+import { revalidatePath } from 'next/cache';
 
-export default async function updateRoommateProfile(formData: FormData)
+export default async function updateRoommateProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
@@ -30,4 +31,8 @@ export default async function updateRoommateProfile(formData: FormData)
 
   account.roommateProfile.preferredBedtime = formPreferredBedtime
   await account.save();
+
+  if (pathToRevalidate) {
+    revalidatePath(pathToRevalidate)
+  }
 }

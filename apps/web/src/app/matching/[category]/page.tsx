@@ -42,7 +42,7 @@ export default async function Matching({ params }: { params: { category: string 
       return (
         <Container>
           <h1>Tell us about yourself...</h1>
-          <RoommateProfileQuestionnaire />
+          <RoommateProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
         </Container>
       )
     }

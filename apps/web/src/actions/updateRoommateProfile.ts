@@ -2,18 +2,19 @@
 
 import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
-import { AccountModel, Guests, RoommateProfileModel, Roster, RosterModel, SleepTime } from '@roster/common';
+import { AccountModel, Guests, RoommateProfileModel, RosterModel } from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
-export default async function updateRoommateProfile(formData: FormData)
+export default async function updateRoommateProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
   const formGuests = formData.get('formGuests')?.valueOf() as Guests
-  const formSleepTime = formData.get('formSleepTime')?.valueOf() as SleepTime
+  const formBio = formData.get('formBio') as string;
+  const formPreferredBedtime = (formData.get('formPreferredBedtime') as string)
 
-  if (!formGuests || !formSleepTime) {
+  if (!formGuests ||!formPreferredBedtime) {
     return;
   }
 
@@ -24,13 +25,18 @@ export default async function updateRoommateProfile(formData: FormData)
     return;
   }
 
-  const roster = new RosterModel(); // GET FROM SERVER
+  if (!account.roommateProfile) {
+    account.roommateProfile = new RoommateProfileModel();
+    account.roommateProfile.roster = new RosterModel();
+    // const matchingPool = await MatchingPoolModel.findOne({ type: 'roommate' }).exec();
+  }
 
-  console.log(formData)
-
-  account.roommateProfile = new RoommateProfileModel({ guests: formGuests, sleepTime: formSleepTime, roster: roster });
-  // account.roommateProfile.roster = roster;
+  account.roommateProfile.bio = formBio;
+  account.roommateProfile.preferredBedtime = formPreferredBedtime;
+  account.roommateProfile.guests = formGuests;
   await account.save();
 
-  revalidatePath('/')
+  if (pathToRevalidate) {
+    revalidatePath(pathToRevalidate)
+  }
 }

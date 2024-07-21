@@ -2,16 +2,14 @@
 
 import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
-import { AccountModel, GeneralProfileModel, Guests } from '@roster/common';
+import { AccountModel, GeneralProfileModel } from '@roster/common';
 import { Gender } from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
-export default async function updateGeneralProfile(formData: FormData)
+export default async function updateGeneralProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
-
-  console.log(formData.get('formInterests')?.valueOf());
 
   const formName = formData.get('formFullName') as string
   const formGender = formData.get('formGender')?.valueOf() as Gender
@@ -48,8 +46,7 @@ export default async function updateGeneralProfile(formData: FormData)
     interests: formInterests, dislikes: formDislikes });
   await account.save();
 
-  console.log(account.generalProfile.interests);
-  console.log(account.generalProfile.dislikes);
-
-  revalidatePath('/')
+  if (pathToRevalidate) {
+    revalidatePath(pathToRevalidate)
+  }
 }

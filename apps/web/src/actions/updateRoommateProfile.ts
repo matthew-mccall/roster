@@ -10,6 +10,7 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
+  const formBio = formData.get('formBio') as string;
   const formPreferredBedtime = (formData.get('formPreferredBedtime') as string)
 
   if (!formPreferredBedtime) {
@@ -29,7 +30,8 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
     // const matchingPool = await MatchingPoolModel.findOne({ type: 'roommate' }).exec();
   }
 
-  account.roommateProfile.preferredBedtime = formPreferredBedtime
+  account.roommateProfile.bio = formBio;
+  account.roommateProfile.preferredBedtime = formPreferredBedtime;
   await account.save();
 
   if (pathToRevalidate) {

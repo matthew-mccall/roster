@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
+import RoommateProfileQuestionnaire from '../../../components/Questionnaires/RoommateProfileQuestionnaire';
 
 export default async function Matching({ params }: { params: { category: string } })
 {
@@ -34,6 +35,17 @@ export default async function Matching({ params }: { params: { category: string 
         <Alert variant={"secondary"}>Please complete the <Link href={"/"} passHref legacyBehavior><AlertLink>general questionnaire</AlertLink></Link> first</Alert>
       </Container>
     )
+  }
+
+  if (params.category === categories.Roommates.route) {
+    if (!account.roommateProfile) {
+      return (
+        <Container>
+          <h1>Tell us about yourself...</h1>
+          <RoommateProfileQuestionnaire />
+        </Container>
+      )
+    }
   }
 
   if (!user1 || !user2) {

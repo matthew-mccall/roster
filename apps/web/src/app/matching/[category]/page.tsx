@@ -25,9 +25,6 @@ export default async function Matching({ params }: { params: { category: string 
     return;
   }
 
-  let user1: Account, user2: Account;
-  // TODO: Fetch two random accounts from matching pool
-
   async function submitPreference(userID: string) {
     // TODO: Calculate ELO, update roster entries
   }

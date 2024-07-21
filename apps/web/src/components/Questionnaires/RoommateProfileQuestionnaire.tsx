@@ -10,7 +10,7 @@ export default function RoommateProfileQuestionnaire({ roommateProfile, pathToRe
     <Form action={formData => updateRoommateProfile(formData, pathToRevalidate)}>
       <Form.Group className="mb-3" controlId="formBio">
         <Form.Label>Bio</Form.Label>
-        <Form.Control as="textarea" rows={3} name={"formBio"} defaultValue={roommateProfile?.bio} placeholder="Enter your bio..." />
+        <Form.Control as="textarea" rows={3} name={"formBio"} defaultValue={roommateProfile?.bio /*Destructuring doesn't work on inherited attributes*/} placeholder="Enter your bio..." />
       </Form.Group>
       <FormGroup className="mb-3" controlId="formPreferredBedtime">
         <FormLabel>What time do you normally go to sleep?</FormLabel>

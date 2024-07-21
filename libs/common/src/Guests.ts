@@ -1,7 +1,7 @@
 export enum Guests {
-  Never,
-  Rarely,
-  Sometimes,
-  Often,
-  AlmostAlways
+  OnceAMonth,
+  BiWeekly,
+  Weekly,
+  MultipleTimesPerWeek,
+  Daily
 }

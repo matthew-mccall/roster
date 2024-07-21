@@ -9,9 +9,9 @@ import {SleepTime} from './SleepTime';
 import { FriendsProfile } from './lib/Profile/FriendsProfile';
 import { StudyProfile } from './lib/Profile/StudyProfile';
 import { Gender } from './lib/Gender';
-import { MatchingPool } from './lib/MatchingPool';
+import { MatchingPool, MatchingPoolSide } from './lib/MatchingPool';
 
-export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, SleepTime }
+export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, MatchingPool, MatchingPoolSide }
 
 export const GeneralProfileModel = getModelForClass(GeneralProfile);
 export const RoommateProfileModel = getModelForClass(RoommateProfile);

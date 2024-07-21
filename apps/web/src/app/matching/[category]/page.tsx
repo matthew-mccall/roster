@@ -25,22 +25,6 @@ export default async function Matching({ params }: { params: { category: string 
     return;
   }
 
-  if (params.category === "roommates" && !account.roommateProfile) {
-    return (<RoommateProfileQuestionnaire />);
-  }
-
-  if (params.category === "dating" && !account.datingProfile) {
-    return (<p>No Questionnaire or Profile Available (Dating)</p>);
-  }
-
-  if (params.category === "friends" && !account.friendsProfile) {
-    return (<p>No Questionnaire or Profile Available (Friends)</p>);
-  }
-
-  if (params.category === "study" && !account.studyProfile) {
-    return (<p>No Questionnaire or Profile Available (Study Group)</p>);
-  }
-
   let user1: Account, user2: Account;
   // TODO: Fetch two random accounts from matching pool
 
@@ -66,6 +50,18 @@ export default async function Matching({ params }: { params: { category: string 
         </Container>
       )
     }
+  }
+
+  if (params.category === categories.Dating.route && !account.datingProfile) {
+    return (<Container><p>No Questionnaire or Profile Available (Dating)</p></Container>);
+  }
+
+  if (params.category === categories.Friends.route && !account.friendsProfile) {
+    return (<Container><p>No Questionnaire or Profile Available (Friends)</p></Container>);
+  }
+
+  if (params.category === categories['Study Groups'].route && !account.studyProfile) {
+    return (<Container><p>No Questionnaire or Profile Available (Study Groups)</p></Container>);
   }
 
   if (!user1 || !user2) {

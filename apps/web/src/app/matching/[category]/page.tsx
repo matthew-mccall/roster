@@ -4,36 +4,37 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
-import { Alert, AlertLink, Card, CardBody, CardText, Form, Stack } from 'react-bootstrap';
+import { Alert, AlertLink, Card, CardBody, CardText, Form, Row, Col } from 'react-bootstrap';
 import { AccountModel, MatchingPoolModel, MatchingPoolSide } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
 import RoommateProfileQuestionnaire from '../../../components/Questionnaires/RoommateProfileQuestionnaire';
 import SubmitButton from '../../../components/SubmitButton';
+import Image from 'next/image';
 
 const mockProfiles = [
   {
     _id: '1',
-    generalProfile: { name: 'Alice' },
+    generalProfile: { name: 'Joe Biden', image: '/images/1.png' },
     datingProfile: true,
     elo: 1200
   },
   {
     _id: '2',
-    generalProfile: { name: 'Bob' },
+    generalProfile: { name: 'Donald Trump', image: '/images/2.png' },
     datingProfile: true,
     elo: 1300
   },
   {
     _id: '3',
-    generalProfile: { name: 'Charlie' },
+    generalProfile: { name: 'Kamala Harris', image: '/images/3.png' },
     datingProfile: true,
     elo: 1100
   },
   {
     _id: '4',
-    generalProfile: { name: 'Dana' },
+    generalProfile: { name: 'Jimmy Carter', image: '/images/4.png' },
     datingProfile: true,
     elo: 1400
   },
@@ -68,12 +69,19 @@ export default async function Matching({ params }: { params: { category: string 
     }
   }
 
-  function getUniqueCandidates(candidates: typeof mockProfiles, exclude: string[]): typeof mockProfiles {
+  function getUniqueCandidates(candidates: typeof mockProfiles, exclude: string[]): [typeof mockProfiles[0], typeof mockProfiles[0]] {
     const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate._id));
     if (uniqueCandidates.length < 2) {
-      return candidates;
+      throw new Error("Not enough unique candidates available");
     }
-    return uniqueCandidates;
+    
+    let user1Ref, user2Ref;
+    do {
+      user1Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
+      user2Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
+    } while (user1Ref._id === user2Ref._id);
+    
+    return [user1Ref, user2Ref];
   }
 
   const account = await getOrCreateAccount({ required: true });
@@ -116,12 +124,7 @@ export default async function Matching({ params }: { params: { category: string 
 
   const seenProfiles: string[] = []; // Mock seen profiles
 
-  const uniqueCandidates = getUniqueCandidates(mockProfiles, seenProfiles);
-  const user1Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
-  const user2Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
-
-  const user1 = mockProfiles.find(profile => profile._id === user1Ref._id);
-  const user2 = mockProfiles.find(profile => profile._id === user2Ref._id);
+  const [user1, user2] = getUniqueCandidates(mockProfiles, seenProfiles);
 
   if (!user1 || !user2) {
     return (
@@ -135,24 +138,28 @@ export default async function Matching({ params }: { params: { category: string 
   }
 
   return (
-    <Stack direction={"horizontal"} gap={3} className={'justify-content-center'}>
-      {[user1, user2].map((account, key) => (
-        <Form
-          action={async () => {
-            'use server';
-            submitPreference(account._id, account._id); // Note: Adjust as needed to pass the correct preferredUserID
-          }}
-          key={key}
-        >
-          <Card>
-            <CardBody>
-              <CardText>{account.generalProfile?.name}</CardText>
-              <SubmitButton>Like</SubmitButton>
-            </CardBody>
-          </Card>
-        </Form>
-      ))}
-    </Stack>
+    <Container>
+      <Row className="justify-content-center">
+        {[user1, user2].map((account, key) => (
+          <Col md={4} key={key}>
+            <Form
+              action={async () => {
+                'use server';
+                submitPreference(account._id, account._id); // Note: Adjust as needed to pass the correct preferredUserID
+              }}
+            >
+              <Card style={{ width: '100%', height: '500px', marginBottom: '20px', position: 'relative' }}>
+                <Image src={account.generalProfile.image} alt={account.generalProfile.name} layout="fill" objectFit="cover" />
+                <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                  <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{account.generalProfile?.name}</CardText>
+                  <SubmitButton>Like</SubmitButton>
+                </CardBody>
+              </Card>
+            </Form>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
 

@@ -1,8 +1,18 @@
+import { MatchingPool, MatchingPoolSide } from '../MatchingPool';
 import { Roster } from '../Roster';
-import { prop } from '@typegoose/typegoose';
+import { Ref, prop } from '@typegoose/typegoose';
 
-export default class Profile
+export default abstract class Profile
 {
   @prop({ required: true, ref: () => Roster })
   public roster!: Roster
+
+  @prop({ required: true })
+  public bio!: string
+
+  @prop({ ref: () => MatchingPool })
+  public pool?: Ref<MatchingPool>
+
+  @prop({ type: Number})
+  public poolSide?: MatchingPoolSide
 }

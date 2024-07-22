@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { SignedIn } from '@clerk/nextjs';
+import { SignedIn, UserButton } from '@clerk/nextjs';
 import LabelledIcon from './LabelledIcon';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -16,7 +16,6 @@ import {
   NavbarOffcanvas, OffcanvasHeader, OffcanvasTitle, OffcanvasBody
 } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
-import UserButton from './UserButton';
 
 export default function NavigationBar() {
   const pathname = usePathname();
@@ -32,7 +31,7 @@ export default function NavigationBar() {
         </Link>
         <SignedIn>
           <div className={'ms-auto me-2 d-flex d-lg-none'}>
-            <UserButton />
+            <UserButton userProfileMode={"navigation"} userProfileUrl={"/me"} />
           </div>
           <NavbarToggle aria-controls="navbar-nav" />
           <NavbarOffcanvas id="navbar-nav" placement={"end"}>
@@ -54,7 +53,7 @@ export default function NavigationBar() {
                 }
               </Nav>
               <div className={'align-self-center d-none d-lg-flex'}>
-                <UserButton />
+                <UserButton userProfileMode={"navigation"} userProfileUrl={"/me"} />
               </div>
             </OffcanvasBody>
           </NavbarOffcanvas>

@@ -18,9 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
       <div className={'d-flex flex-column min-vh-100'}>
         <NavigationBar />
         <VerticalCenter>
-          <Container>
-            {children}
-          </Container>
+          {children}
         </VerticalCenter>
       </div>
       </body>

@@ -8,4 +8,10 @@ export class GeneralProfile
 
   @prop({ required: true, type: Number })
   public gender!: Gender;
+
+  @prop({ required: true })
+  public interests!: string[]
+
+  @prop({ required: true })
+  public dislikes!: string[]
 }

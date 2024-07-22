@@ -2,7 +2,7 @@
 
 import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
-import { AccountModel, RoommateProfileModel, RosterModel } from '@roster/common';
+import { AccountModel, Guests, RoommateProfileModel, RosterModel } from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
 export default async function updateRoommateProfile(formData: FormData, pathToRevalidate? : string)
@@ -10,10 +10,11 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
+  const formGuests = formData.get('formGuests')?.valueOf() as Guests
   const formBio = formData.get('formBio') as string;
   const formPreferredBedtime = (formData.get('formPreferredBedtime') as string)
 
-  if (!formPreferredBedtime) {
+  if (!formGuests ||!formPreferredBedtime) {
     return;
   }
 
@@ -32,6 +33,7 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
 
   account.roommateProfile.bio = formBio;
   account.roommateProfile.preferredBedtime = formPreferredBedtime;
+  account.roommateProfile.guests = formGuests;
   await account.save();
 
   if (pathToRevalidate) {

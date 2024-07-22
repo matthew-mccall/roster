@@ -19,11 +19,15 @@ export default async function Matching({ params }: { params: { category: string 
     notFound()
   }
 
+  const account = await getOrCreateAccount({ required: true })
+
+  if (!account) {
+    return;
+  }
+
   async function submitPreference(userID: string) {
     // TODO: Calculate ELO, update roster entries
   }
-
-  const account = await getOrCreateAccount({ required: true })
 
   if (!account || !account.generalProfile) {
     return (
@@ -43,6 +47,12 @@ export default async function Matching({ params }: { params: { category: string 
       break;
     case categories.Dating.route:
       profile = account.datingProfile;
+      break;
+    case categories.Friends.route:
+      profile = account.friendsProfile;
+      break;
+    case categories['Study Groups'].route:
+      profile = account.studyProfile;
       break;
   }
 

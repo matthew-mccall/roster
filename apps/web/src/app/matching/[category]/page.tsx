@@ -8,6 +8,10 @@ import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
 import RoommateProfileQuestionnaire from '../../../components/Questionnaires/RoommateProfileQuestionnaire';
 import SubmitButton from '../../../components/SubmitButton';
+import DatingProfileView from '../../../components/Profiles/DatingProfileView';
+import DatingProfileQuestionnaire from '../../../components/Questionnaires/DatingProfileQuestionnaire';
+import FriendsProfileQuestionnaire from '../../../components/Questionnaires/FriendsProfileQuestionnaire';
+import StudyProfileQuestionnaire from '../../../components/Questionnaires/StudyProfileQuestionnaire';
 
 export default async function Matching({ params }: { params: { category: string } })
 {
@@ -47,12 +51,15 @@ export default async function Matching({ params }: { params: { category: string 
       break;
     case categories.Dating.route:
       profile = account.datingProfile;
+      questionnaire = <DatingProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`}  />
       break;
     case categories.Friends.route:
       profile = account.friendsProfile;
+      questionnaire = <FriendsProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
       break;
     case categories['Study Groups'].route:
       profile = account.studyProfile;
+      questionnaire = <StudyProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
       break;
   }
 
@@ -85,6 +92,8 @@ export default async function Matching({ params }: { params: { category: string 
   // TODO: Better solution may be to build a queue and pop people off the queue, to make sure we go through everyone before we repeat
   const user1 = await AccountModel.findById(user1Ref).exec();
   const user2 = await AccountModel.findById(user2Ref).exec();
+  // const user1 = null;
+  // const user2 = null;
 
   if (!user1 || !user2) {
     return (

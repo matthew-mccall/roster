@@ -9,8 +9,11 @@ import { FriendsProfile } from './lib/Profile/FriendsProfile';
 import { StudyProfile } from './lib/Profile/StudyProfile';
 import { Gender } from './lib/Gender';
 import { MatchingPool, MatchingPoolSide } from './lib/MatchingPool';
+import { SexualOrientation } from './SexualOrientation';
+import { DrinkOccasion } from './DrinkOccasion';
+import { Parties } from './Parties';
 
-export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, MatchingPool, MatchingPoolSide }
+export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, MatchingPool, MatchingPoolSide, SexualOrientation, DrinkOccasion, Parties }
 
 export const GeneralProfileModel = getModelForClass(GeneralProfile);
 export const RoommateProfileModel = getModelForClass(RoommateProfile);

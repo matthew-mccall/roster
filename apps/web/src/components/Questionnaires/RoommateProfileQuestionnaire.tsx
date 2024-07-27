@@ -18,7 +18,7 @@ export default function RoommateProfileQuestionnaire({ roommateProfile, pathToRe
       </FormGroup>
       <FormGroup className="mb-3" controlId="formGuests">
         <FormLabel>How often do you like having guests?</FormLabel>
-        <FormSelect aria-label="Default select example" name={"formGuests"}>
+        <FormSelect aria-label="Default select example" name={"formGuests"} defaultValue={roommateProfile?.guests}>
           <option value={0}>Once a month</option>
           <option value={1}>Once every two weeks</option>
           <option value={2}>Once a week</option>

@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import { Stack } from 'react-bootstrap';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
+import IconedButton from './IconedButton';
 
 export default function MultiInput({ inputArray = [], placeholder, name } : {inputArray?: string[], placeholder: string, name: string,  }) {
   const [inputs, setInputs] = useState(inputArray);
@@ -26,7 +27,7 @@ export default function MultiInput({ inputArray = [], placeholder, name } : {inp
   return (
     <Stack gap={2}>
       {inputs.map((input, index) => (
-        <div key={index} className="input-group">
+        <div key={index} className="input-group col-6">
           <FormControl
             type="text"
             value={input}
@@ -35,7 +36,7 @@ export default function MultiInput({ inputArray = [], placeholder, name } : {inp
             onChange={(e) => handleInputChange(index, e.target.value)}
           />
           <Button variant={'danger'} onClick={() => removeInput(index)}>
-            <span className="glyphicon glyphicon-trash">Remove</span>
+            <i className={"bi bi-trash3"}/>
           </Button>
         </div>
       ))}

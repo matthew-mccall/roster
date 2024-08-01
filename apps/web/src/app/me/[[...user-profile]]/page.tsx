@@ -13,8 +13,11 @@ import styles from './page.module.scss'
 import Container from 'react-bootstrap/Container';
 import Link from 'next/link';
 import FriendsProfileView from '../../../components/Profiles/FriendsProfileView';
-import StudyProfileView from 'apps/web/src/components/Profiles/StudyProfileView';
+import StudyProfileView from '../../../components/Profiles/StudyProfileView';
 
+/**
+ * User account/settings page
+ */
 export default function MePage() {
   const { data, error, isLoading } = useSWR('/api/me', fetcher);
 
@@ -36,6 +39,7 @@ export default function MePage() {
     )
   }
 
+  // get account data
   const { generalProfile, roommateProfile, datingProfile, friendsProfile, studyProfile } = data as Account;
 
   return (
@@ -92,7 +96,7 @@ export default function MePage() {
         >
           {studyProfile
             ? <StudyProfileView studyProfile={studyProfile} />
-            : <Alert variant={"secondary"}>Please complete the <Link href={`/matching/${categories.Friends.route}`} passHref legacyBehavior><AlertLink>friends questionnaire</AlertLink></Link> first</Alert>
+            : <Alert variant={"secondary"}>Please complete the <Link href={`/matching/${categories['Study Groups'].route}`} passHref legacyBehavior><AlertLink>study group questionnaire</AlertLink></Link> first</Alert>
           }        </ClerkUserButton.UserProfilePage>
       </UserProfile>
     </Container>

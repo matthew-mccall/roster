@@ -9,11 +9,17 @@ import {
 } from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
+/**
+ * Updates the study profile
+ * @param formData Data from the form
+ * @param pathToRevalidate Path to revalidate
+ */
 export default async function updateFriendsProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
+  // get fields
   const formBio = formData.get('formBio') as string;
   const formLocation = formData.get('formLocation') as string;
   const formTopic = formData.get('formTopic') as string;
@@ -22,6 +28,7 @@ export default async function updateFriendsProfile(formData: FormData, pathToRev
     return;
   }
 
+  // get account
   await mongoose;
   const account = await AccountModel.findById(userId).exec();
 
@@ -29,6 +36,7 @@ export default async function updateFriendsProfile(formData: FormData, pathToRev
     return;
   }
 
+  // update profile
   if (!account.studyProfile) {
     account.studyProfile = new StudyProfileModel();
     account.studyProfile.roster = new RosterModel();
@@ -41,6 +49,7 @@ export default async function updateFriendsProfile(formData: FormData, pathToRev
 
   await account.save();
 
+  // revalidate
   if (pathToRevalidate) {
     revalidatePath(pathToRevalidate)
   }

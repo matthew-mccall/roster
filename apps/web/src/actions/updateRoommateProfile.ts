@@ -5,11 +5,17 @@ import dbConnect from '../db';
 import { AccountModel, Guests, RoommateProfileModel, RosterModel } from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
+/**
+ * Updates the roommate profile
+ * @param formData Data from the form
+ * @param pathToRevalidate Path to revalidate
+ */
 export default async function updateRoommateProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
+  // get fields
   const formGuests = formData.get('formGuests')?.valueOf() as Guests
   const formBio = formData.get('formBio') as string;
   const formPreferredBedtime = (formData.get('formPreferredBedtime') as string)
@@ -18,6 +24,7 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
     return;
   }
 
+  // get account
   await mongoose;
   const account = await AccountModel.findById(userId).exec();
 
@@ -25,6 +32,7 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
     return;
   }
 
+  // update profile
   if (!account.roommateProfile) {
     account.roommateProfile = new RoommateProfileModel();
     account.roommateProfile.roster = new RosterModel();
@@ -36,6 +44,7 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
   account.roommateProfile.guests = formGuests;
   await account.save();
 
+  // revalidate
   if (pathToRevalidate) {
     revalidatePath(pathToRevalidate)
   }

@@ -6,6 +6,12 @@ import SubmitButton from '../SubmitButton';
 import { GeneralProfile } from '@roster/common';
 import MultiInput from '../MultiInput';
 
+/**
+ * Questionnaire to fill in general profile information
+ * @param generalProfile General Profile to fill in existing information
+ * @param pathToRevalidate Path to revalidate
+ * @constructor
+ */
 export default function GeneralProfileQuestionnaire({ generalProfile, pathToRevalidate }: { generalProfile?: GeneralProfile, pathToRevalidate?: string }) {
 
   let name, gender;

@@ -5,6 +5,12 @@ import SubmitButton from '../SubmitButton';
 import { DatingProfile, FriendsProfile, StudyProfile } from '@roster/common';
 import updateStudyProfile from '../../actions/updateStudyProfile';
 
+/**
+ * Questionnaire to fill in study profile information
+ * @param studyProfile Study profile to fill in existing information
+ * @param pathToRevalidate Path to revalidate
+ * @constructor
+ */
 export default function StudyProfileQuestionnaire({ studyProfile, pathToRevalidate }: { studyProfile?: StudyProfile, pathToRevalidate?: string }) {
   return (
     <Form action={formData => updateStudyProfile(formData, pathToRevalidate)}>

@@ -5,6 +5,13 @@ import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import IconedButton from './IconedButton';
 
+/**
+ * Function to have a variable length input for things like interest arrays
+ * @param inputArray Array to use as existing information
+ * @param placeholder Placeholder value for the array
+ * @param name Name of the form field
+ * @constructor
+ */
 export default function MultiInput({ inputArray = [], placeholder, name } : {inputArray?: string[], placeholder: string, name: string,  }) {
   const [inputs, setInputs] = useState(inputArray);
 

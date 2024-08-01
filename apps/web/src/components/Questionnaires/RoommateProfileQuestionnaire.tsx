@@ -5,6 +5,12 @@ import SubmitButton from '../SubmitButton';
 import { RoommateProfile } from '@roster/common';
 import updateRoommateProfile from '../../actions/updateRoommateProfile';
 
+/**
+ * Questionnaire for roommate profile information
+ * @param roommateProfile Roommate profile to fill in account information that already exists
+ * @param pathToRevalidate Path the revalidate
+ * @constructor
+ */
 export default function RoommateProfileQuestionnaire({ roommateProfile, pathToRevalidate }: { roommateProfile?: RoommateProfile, pathToRevalidate?: string }) {
   return (
     <Form action={formData => updateRoommateProfile(formData, pathToRevalidate)}>

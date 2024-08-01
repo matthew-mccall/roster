@@ -6,6 +6,12 @@ import { DatingProfile, FriendsProfile } from '@roster/common';
 import updateFriendsProfile from '../../actions/updateFriendsProfile';
 import MultiInput from '../MultiInput';
 
+/**
+ * Questionnaire for user to fill in friends profile
+ * @param friendsProfile Friends profile to fill in existing information
+ * @param pathToRevalidate Path to revalidate
+ * @constructor
+ */
 export default function FriendsProfileQuestionnaire({ friendsProfile, pathToRevalidate }: { friendsProfile?: FriendsProfile, pathToRevalidate?: string }) {
   return (
     <Form action={formData => updateFriendsProfile(formData, pathToRevalidate)}>

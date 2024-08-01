@@ -8,11 +8,17 @@ import {
 } from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
+/**
+ * Updates the friends profile
+ * @param formData Data from the form
+ * @param pathToRevalidate Path to revalidate
+ */
 export default async function updateFriendsProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
+  // get fields
   const formBio = formData.get('formBio') as string;
   const formActivities = new Array(0);
   formData.forEach((value, key) => {
@@ -23,6 +29,7 @@ export default async function updateFriendsProfile(formData: FormData, pathToRev
     return;
   }
 
+  // get account
   await mongoose;
   const account = await AccountModel.findById(userId).exec();
 
@@ -36,11 +43,13 @@ export default async function updateFriendsProfile(formData: FormData, pathToRev
     // const matchingPool = await MatchingPoolModel.findOne({ type: 'roommate' }).exec();
   }
 
+  // update account
   account.friendsProfile.bio = formBio;
   account.friendsProfile.activities = formActivities;
 
   await account.save();
 
+  // revalidate
   if (pathToRevalidate) {
     revalidatePath(pathToRevalidate)
   }

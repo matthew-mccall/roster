@@ -4,7 +4,14 @@ import { Form, FormControl, FormGroup, FormLabel, FormSelect, Stack } from 'reac
 import updateGeneralProfile from '../../actions/updateGeneralProfile';
 import SubmitButton from '../SubmitButton';
 import { GeneralProfile } from '@roster/common';
+import MultiInput from '../MultiInput';
 
+/**
+ * Questionnaire to fill in general profile information
+ * @param generalProfile General Profile to fill in existing information
+ * @param pathToRevalidate Path to revalidate
+ * @constructor
+ */
 export default function GeneralProfileQuestionnaire({ generalProfile, pathToRevalidate }: { generalProfile?: GeneralProfile, pathToRevalidate?: string }) {
 
   let name, gender;
@@ -29,32 +36,12 @@ export default function GeneralProfileQuestionnaire({ generalProfile, pathToReva
         </FormSelect>
       </FormGroup>
       <FormGroup className="mb-3" controlId="formInterests">
-        <FormLabel>Enter up to 3 of your top hobbies and interests:</FormLabel>
-        <Stack gap={2}>
-          <FormControl placeholder="Hobby/Interest"
-                       defaultValue={generalProfile && generalProfile.interests.length > 0 ? generalProfile.interests[0]: ""}
-                       name="formInterest0" />
-          <FormControl placeholder="Hobby/Interest"
-                       defaultValue={generalProfile && generalProfile.interests.length > 1 ? generalProfile.interests[1]: ""}
-                       name="formInterest1" />
-          <FormControl placeholder="Hobby/Interest"
-                       defaultValue={generalProfile && generalProfile.interests.length > 2 ? generalProfile.interests[2]: ""}
-                       name="formInterest2" />
-        </Stack>
+        <FormLabel>Hobbies and Interests</FormLabel>
+        <MultiInput inputArray={generalProfile?.interests} placeholder={"Hobby/Interest"} name={"formInterests"} />
       </FormGroup>
       <FormGroup className="mb-3" controlId="formDislikes">
-        <FormLabel>Enter up to 3 of your dislikes:</FormLabel>
-        <Stack gap={2}>
-          <FormControl placeholder="Dislike"
-                       defaultValue={generalProfile && generalProfile.dislikes.length > 0 ? generalProfile.dislikes[0]: ""}
-                       name="formDislikes0" />
-          <FormControl placeholder="Dislike"
-                       defaultValue={generalProfile && generalProfile.dislikes.length > 1 ? generalProfile.dislikes[1]: ""}
-                       name="formDislikes1" />
-          <FormControl placeholder="Dislike"
-                       defaultValue={generalProfile && generalProfile.dislikes.length > 2 ? generalProfile.dislikes[2]: ""}
-                       name="formDislikes2" />
-        </Stack>
+        <FormLabel>Dislikes</FormLabel>
+        <MultiInput inputArray={generalProfile?.dislikes} placeholder={"Dislike"} name={"formDislikes"} />
       </FormGroup>
       <SubmitButton variant="primary" type="submit">
         Save

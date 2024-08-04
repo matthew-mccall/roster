@@ -2,39 +2,38 @@
 
 import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
-import { AccountModel, GeneralProfileModel } from '@roster/common';
+import { AccountModel, GeneralProfileModel, Guests } from '@roster/common';
 import { Gender } from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
+/**
+ * Updates the general profile
+ * @param formData Data from the form
+ * @param pathToRevalidate Path to revalidate
+ */
 export default async function updateGeneralProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
+  // get fields
   const formName = formData.get('formFullName') as string
   const formGender = formData.get('formGender')?.valueOf() as Gender
-  const formInterests = new Array(3);
-  const formDislikes = new Array(3);
-  let i = 0;
-  formInterests[i] = formData.get("formInterest0")?.valueOf() as string;
-  if ((formData.get("formInterest0")?.valueOf() as string).length > 0) i = i+1;
-  formInterests[i] = formData.get("formInterest1")?.valueOf() as string;
-  if ((formData.get("formInterest1")?.valueOf() as string).length > 0) i = i+1;
-  formInterests[i] = formData.get("formInterest2")?.valueOf() as string;
-  if ((formData.get("formInterest2")?.valueOf() as string).length > 0) i = i+1;
+  const formInterests = new Array(0);
+  const formDislikes = new Array(0);
 
-  i = 0;
-  formDislikes[i] = formData.get("formDislikes0")?.valueOf() as string;
-  if ((formData.get("formDislikes0")?.valueOf() as string).length > 0) i = i+1;
-  formDislikes[i] = formData.get("formDislikes1")?.valueOf() as string;
-  if ((formData.get("formDislikes1")?.valueOf() as string).length > 0) i = i+1;
-  formDislikes[i] = formData.get("formDislikes2")?.valueOf() as string;
-  if ((formData.get("formDislikes2")?.valueOf() as string).length > 0) i = i+1;
+  // get multi-input fields
+  formData.forEach((value, key) => {
+    if (key.startsWith("formInterests") && value.length > 0){formInterests.push(value as string)}
+    if (key.startsWith("formDislikes") && value.length > 0){formDislikes.push(value as string)}
+  });
+
 
   if (!formName || !formGender) {
     return;
   }
 
+  // get account
   await mongoose;
   const account = await AccountModel.findById(userId).exec();
 
@@ -42,10 +41,12 @@ export default async function updateGeneralProfile(formData: FormData, pathToRev
     return;
   }
 
+  // update profile
   account.generalProfile = new GeneralProfileModel({ name: formName, gender: formGender,
     interests: formInterests, dislikes: formDislikes });
   await account.save();
 
+  // revalidate
   if (pathToRevalidate) {
     revalidatePath(pathToRevalidate)
   }

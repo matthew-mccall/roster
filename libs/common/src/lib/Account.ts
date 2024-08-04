@@ -20,7 +20,7 @@ export class Account
   public datingProfile?: DatingProfile;
 
   @prop({ type: () => FriendsProfile })
-  public friendsProfile?: RoommateProfile;
+  public friendsProfile?: FriendsProfile;
 
   @prop({ type: () => StudyProfile })
   public studyProfile?: StudyProfile;

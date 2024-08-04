@@ -8,11 +8,16 @@ import DatingProfileView from '../../../components/Profiles/DatingProfileView';
 import useSWR from 'swr';
 import fetcher from '../../../fetcher';
 import { Alert, AlertLink, Spinner, Stack } from 'react-bootstrap';
-import { Account } from '@roster/common';
+import { Account, FriendsProfile } from '@roster/common';
 import styles from './page.module.scss'
 import Container from 'react-bootstrap/Container';
 import Link from 'next/link';
+import FriendsProfileView from '../../../components/Profiles/FriendsProfileView';
+import StudyProfileView from '../../../components/Profiles/StudyProfileView';
 
+/**
+ * User account/settings page
+ */
 export default function MePage() {
   const { data, error, isLoading } = useSWR('/api/me', fetcher);
 
@@ -34,7 +39,8 @@ export default function MePage() {
     )
   }
 
-  const { generalProfile, roommateProfile, datingProfile } = data as Account;
+  // get account data
+  const { generalProfile, roommateProfile, datingProfile, friendsProfile, studyProfile } = data as Account;
 
   return (
     <Container>
@@ -73,6 +79,24 @@ export default function MePage() {
           {datingProfile
             ? <DatingProfileView datingProfile={datingProfile} />
             : <Alert variant={"secondary"}>Please complete the <Link href={`/matching/${categories.Dating.route}`} passHref legacyBehavior><AlertLink>dating questionnaire</AlertLink></Link> first</Alert>
+          }        </ClerkUserButton.UserProfilePage>
+        <ClerkUserButton.UserProfilePage
+          label={`Friends Profile`}
+          url={categories.Friends.route}
+          labelIcon={<i className={`${categories.Friends.icon}-fill`} />}
+        >
+          {friendsProfile
+            ? <FriendsProfileView friendsProfile={friendsProfile} />
+            : <Alert variant={"secondary"}>Please complete the <Link href={`/matching/${categories.Friends.route}`} passHref legacyBehavior><AlertLink>friends questionnaire</AlertLink></Link> first</Alert>
+          }        </ClerkUserButton.UserProfilePage>
+        <ClerkUserButton.UserProfilePage
+          label={`Study Profile`}
+          url={categories['Study Groups'].route}
+          labelIcon={<i className={`${categories['Study Groups'].icon}-fill`} />}
+        >
+          {studyProfile
+            ? <StudyProfileView studyProfile={studyProfile} />
+            : <Alert variant={"secondary"}>Please complete the <Link href={`/matching/${categories['Study Groups'].route}`} passHref legacyBehavior><AlertLink>study group questionnaire</AlertLink></Link> first</Alert>
           }        </ClerkUserButton.UserProfilePage>
       </UserProfile>
     </Container>

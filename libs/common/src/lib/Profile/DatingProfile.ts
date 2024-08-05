@@ -1,3 +1,4 @@
+import Profile from '.';
 import { prop } from '@typegoose/typegoose';
 import Profile from './index';
 

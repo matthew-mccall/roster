@@ -4,14 +4,22 @@ import { Roster, RosterEntry } from './lib/Roster';
 import { GeneralProfile } from './lib/Profile/GeneralProfile';
 import { RoommateProfile } from './lib/Profile/RoommateProfile';
 import { DatingProfile } from './lib/Profile/DatingProfile';
+import {Guests} from './Guests';
+import { FriendsProfile } from './lib/Profile/FriendsProfile';
+import { StudyProfile } from './lib/Profile/StudyProfile';
 import { Gender } from './lib/Gender';
 import { MatchingPool, MatchingPoolSide } from './lib/MatchingPool';
+import { SexualOrientation } from './SexualOrientation';
+import { DrinkOccasion } from './DrinkOccasion';
+import { Parties } from './Parties';
 
-export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, Gender, MatchingPool, MatchingPoolSide }
+export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, MatchingPool, MatchingPoolSide, SexualOrientation, DrinkOccasion, Parties }
 
 export const GeneralProfileModel = getModelForClass(GeneralProfile);
 export const RoommateProfileModel = getModelForClass(RoommateProfile);
 export const DatingProfileModel = getModelForClass(DatingProfile);
+export const FriendsProfileModel = getModelForClass(FriendsProfile);
+export const StudyProfileModel = getModelForClass(StudyProfile);
 export const AccountModel = getModelForClass(Account)
 export const RosterEntryModel = getModelForClass(RosterEntry)
 export const RosterModel = getModelForClass(Roster)

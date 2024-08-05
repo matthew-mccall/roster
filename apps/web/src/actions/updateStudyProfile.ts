@@ -2,25 +2,29 @@
 
 import { auth } from '@clerk/nextjs/server';
 import dbConnect from '../db';
-import { AccountModel, Guests, RoommateProfileModel, RosterModel } from '@roster/common';
+import {
+  AccountModel,
+  Guests,
+  RosterModel, StudyProfile, StudyProfileModel
+} from '@roster/common';
 import { revalidatePath } from 'next/cache';
 
 /**
- * Updates the roommate profile
+ * Updates the study profile
  * @param formData Data from the form
  * @param pathToRevalidate Path to revalidate
  */
-export default async function updateRoommateProfile(formData: FormData, pathToRevalidate? : string)
+export default async function updateFriendsProfile(formData: FormData, pathToRevalidate? : string)
 {
   const mongoose = dbConnect();
   const { userId } = auth().protect();
 
   // get fields
-  const formGuests = formData.get('formGuests')?.valueOf() as Guests
   const formBio = formData.get('formBio') as string;
-  const formPreferredBedtime = (formData.get('formPreferredBedtime') as string)
+  const formLocation = formData.get('formLocation') as string;
+  const formTopic = formData.get('formTopic') as string;
 
-  if (!formGuests ||!formPreferredBedtime) {
+  if (!formBio || !formLocation || !formTopic) {
     return;
   }
 
@@ -33,15 +37,16 @@ export default async function updateRoommateProfile(formData: FormData, pathToRe
   }
 
   // update profile
-  if (!account.roommateProfile) {
-    account.roommateProfile = new RoommateProfileModel();
-    account.roommateProfile.roster = new RosterModel();
+  if (!account.studyProfile) {
+    account.studyProfile = new StudyProfileModel();
+    account.studyProfile.roster = new RosterModel();
     // const matchingPool = await MatchingPoolModel.findOne({ type: 'roommate' }).exec();
   }
 
-  account.roommateProfile.bio = formBio;
-  account.roommateProfile.preferredBedtime = formPreferredBedtime;
-  account.roommateProfile.guests = formGuests;
+  account.studyProfile.bio = formBio;
+  account.studyProfile.topic = formTopic;
+  account.studyProfile.location = formLocation;
+
   await account.save();
 
   // revalidate

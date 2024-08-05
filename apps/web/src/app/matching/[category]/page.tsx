@@ -1,7 +1,7 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
-import { Alert, AlertLink, Card, CardBody, CardText, Form, Stack } from 'react-bootstrap';
+import { Alert, AlertLink, Card, CardBody, CardText, Col, Form, Row } from 'react-bootstrap';
 import { AccountModel, MatchingPoolModel, MatchingPoolSide } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
@@ -12,17 +12,16 @@ import DatingProfileQuestionnaire from '../../../components/Questionnaires/Datin
 import FriendsProfileQuestionnaire from '../../../components/Questionnaires/FriendsProfileQuestionnaire';
 import StudyProfileQuestionnaire from '../../../components/Questionnaires/StudyProfileQuestionnaire';
 
-export default async function Matching({ params }: { params: { category: string } })
-{
+export default async function Matching({ params }: { params: { category: string } }) {
   const categoryRoutes = Object.entries(categories).map(([, value]) => {
-    return value.route
-  })
+    return value.route;
+  });
 
   if (!categoryRoutes.includes(params.category)) {
-    notFound()
+    notFound();
   }
 
-  const account = await getOrCreateAccount({ required: true })
+  const account = await getOrCreateAccount({ required: true });
 
   if (!account) {
     return;
@@ -35,9 +34,10 @@ export default async function Matching({ params }: { params: { category: string 
   if (!account || !account.generalProfile) {
     return (
       <Container>
-        <Alert variant={"secondary"}>Please complete the <Link href={"/"} passHref legacyBehavior><AlertLink>general questionnaire</AlertLink></Link> first</Alert>
+        <Alert variant={'secondary'}>Please complete the <Link href={'/'} passHref legacyBehavior><AlertLink>general
+          questionnaire</AlertLink></Link> first</Alert>
       </Container>
-    )
+    );
   }
 
   let profile;
@@ -46,19 +46,19 @@ export default async function Matching({ params }: { params: { category: string 
   switch (params.category) {
     case categories.Roommates.route:
       profile = account.roommateProfile;
-      questionnaire = <RoommateProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
+      questionnaire = <RoommateProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
     case categories.Dating.route:
       profile = account.datingProfile;
-      questionnaire = <DatingProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`}  />
+      questionnaire = <DatingProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
     case categories.Friends.route:
       profile = account.friendsProfile;
-      questionnaire = <FriendsProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
+      questionnaire = <FriendsProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
     case categories['Study Groups'].route:
       profile = account.studyProfile;
-      questionnaire = <StudyProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
+      questionnaire = <StudyProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
   }
 
@@ -68,13 +68,13 @@ export default async function Matching({ params }: { params: { category: string 
         <h1>Tell us about yourself...</h1>
         {questionnaire}
       </Container>
-    )
+    );
   }
 
   let pool;
 
   if (profile.pool) {
-    pool = await MatchingPoolModel.findById(profile.pool)
+    pool = await MatchingPoolModel.findById(profile.pool);
   }
 
   if (!pool) {
@@ -82,7 +82,7 @@ export default async function Matching({ params }: { params: { category: string 
   }
 
   if (!pool) {
-    pool = new MatchingPoolModel({ type: params.category, left: [], right: [] })
+    pool = new MatchingPoolModel({ type: params.category, left: [], right: [] });
   }
 
   if (!pool.left.includes(account._id) && !pool.right.includes(account._id)) {
@@ -120,33 +120,37 @@ export default async function Matching({ params }: { params: { category: string 
 
   if (!user1 || !user2) {
     return (
-      <div className={"text-center"}>
+      <div className={'text-center'}>
         <SignedIn>
-          <h1 className={"text-primary fw-semibold display-1"}>The show&apos;s over</h1>
+          <h1 className={'text-primary fw-semibold display-1'}>The show&apos;s over</h1>
           <p className={'lead'}>We ran out of people to show you. Check in later.</p>
         </SignedIn>
       </div>
-    )
+    );
   }
 
   return (
-    <Stack direction={"horizontal"} gap={3} className={'justify-content-center'}>
-      {
-        [user1, user2].map((account, key) => (
-          <Form action={async () => {
-            'use server'
-            // submitPreference(account._id);
-          }} key={key}>
-            <Card>
-              <CardBody>
-                <CardText>{account.generalProfile?.name}</CardText>
-                <SubmitButton>Like</SubmitButton>
-              </CardBody>
-            </Card>
-          </Form>
-        ))
-      }
-    </Stack>
-  )
+    <Container>
+      <Row className={"g-3"}>
+        {
+          [user1, user2].map((account, key) => (
+            <Col key={key} sm>
+              <Form action={async () => {
+                'use server';
+                // submitPreference(account._id);
+              }}>
+                <Card>
+                  <CardBody>
+                    <CardText>{account.generalProfile?.name}</CardText>
+                    <SubmitButton className={"w-100"}>Like</SubmitButton>
+                  </CardBody>
+                </Card>
+              </Form>
+            </Col>
+          ))
+        }
+      </Row>
+    </Container>
+  );
 
 }

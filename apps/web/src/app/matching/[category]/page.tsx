@@ -8,7 +8,6 @@ import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
 import RoommateProfileQuestionnaire from '../../../components/Questionnaires/RoommateProfileQuestionnaire';
 import SubmitButton from '../../../components/SubmitButton';
-import DatingProfileView from '../../../components/Profiles/DatingProfileView';
 import DatingProfileQuestionnaire from '../../../components/Questionnaires/DatingProfileQuestionnaire';
 import FriendsProfileQuestionnaire from '../../../components/Questionnaires/FriendsProfileQuestionnaire';
 import StudyProfileQuestionnaire from '../../../components/Questionnaires/StudyProfileQuestionnaire';
@@ -86,9 +85,25 @@ export default async function Matching({ params }: { params: { category: string 
     pool = new MatchingPoolModel({ type: params.category, left: [], right: [] })
   }
 
-  profile.pool = pool;
+  if (!pool.left.includes(account._id) && !pool.right.includes(account._id)) {
+    switch (params.category) {
+      case categories.Roommates.route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account._id);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account._id);
+        }
+        break;
+      case categories.Dating.route:
+        break;
+    }
+  }
 
-  await account.save();
+  profile.pool = pool;
+  await Promise.all([account.save(), pool.save()]);
+
   const candidates =
     profile.poolSide == MatchingPoolSide.Left
       ? pool.right
@@ -124,7 +139,7 @@ export default async function Matching({ params }: { params: { category: string 
           }} key={key}>
             <Card>
               <CardBody>
-                {/*<CardText>{account.generalProfile?.name}</CardText>*/}
+                <CardText>{account.generalProfile?.name}</CardText>
                 <SubmitButton>Like</SubmitButton>
               </CardBody>
             </Card>

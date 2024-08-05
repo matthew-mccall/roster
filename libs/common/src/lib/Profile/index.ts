@@ -1,6 +1,6 @@
 import { MatchingPool, MatchingPoolSide } from '../MatchingPool';
 import { Roster } from '../Roster';
-import { Ref, prop } from '@typegoose/typegoose';
+import { type Ref, prop } from '@typegoose/typegoose';
 
 export default abstract class Profile
 {

@@ -1,4 +1,4 @@
-import { prop, Ref } from '@typegoose/typegoose';
+import { prop, type Ref } from '@typegoose/typegoose';
 import { Account } from './Account';
 
 export class RosterEntry

@@ -9,7 +9,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      - MONGO_URI=mongodb://mongo:27017/app
+      - MONGODB_URI=mongodb://mongo:27017/app
     env_file: ".env.local"
 
   mongo:

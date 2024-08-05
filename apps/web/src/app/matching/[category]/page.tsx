@@ -73,18 +73,26 @@ export default async function Matching({ params }: { params: { category: string 
   }
 
   let pool;
-  if (!profile.pool) {
-    pool = await MatchingPoolModel.findOne({ type: params.category }).exec();
-    if (!pool) {
-      pool = new MatchingPoolModel({ type: params.category })
-    }
-    profile.pool = pool;
-  } else {
-    pool = (await MatchingPoolModel.findById(profile.pool))!
+
+  if (profile.pool) {
+    pool = await MatchingPoolModel.findById(profile.pool)
   }
 
+  if (!pool) {
+    pool = await MatchingPoolModel.findOne({ type: params.category }).exec();
+  }
+
+  if (!pool) {
+    pool = new MatchingPoolModel({ type: params.category, left: [], right: [] })
+  }
+
+  profile.pool = pool;
+
   await account.save();
-  const candidates = profile.poolSide == MatchingPoolSide.Left ? pool.right : pool.left;
+  const candidates =
+    profile.poolSide == MatchingPoolSide.Left
+      ? pool.right
+      : pool.left;
 
   const user1Ref = candidates[Math.floor(Math.random() * candidates.length)];
   const user2Ref = candidates[Math.floor(Math.random() * candidates.length)];
@@ -112,11 +120,11 @@ export default async function Matching({ params }: { params: { category: string 
         [user1, user2].map((account, key) => (
           <Form action={async () => {
             'use server'
-            submitPreference(account._id);
+            // submitPreference(account._id);
           }} key={key}>
             <Card>
               <CardBody>
-                <CardText>{account.generalProfile?.name}</CardText>
+                {/*<CardText>{account.generalProfile?.name}</CardText>*/}
                 <SubmitButton>Like</SubmitButton>
               </CardBody>
             </Card>

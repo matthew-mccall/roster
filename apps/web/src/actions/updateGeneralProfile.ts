@@ -5,6 +5,7 @@ import dbConnect from '../db';
 import { AccountModel, GeneralProfileModel, Guests } from '@roster/common';
 import { Gender } from '@roster/common';
 import { revalidatePath } from 'next/cache';
+import getOrCreateAccount from '../lib/getOrCreateAccount';
 
 /**
  * Updates the general profile
@@ -13,9 +14,12 @@ import { revalidatePath } from 'next/cache';
  */
 export default async function updateGeneralProfile(formData: FormData, pathToRevalidate? : string)
 {
-  const mongoose = dbConnect();
-  const { userId } = auth().protect();
+  const mongoose = await dbConnect();
+  const account = await getOrCreateAccount({ required: true })
 
+  if (!account) {
+    throw new Error('You must be signed in to perform this action')
+  }
   // get fields
   const formName = formData.get('formFullName') as string
   const formGender = formData.get('formGender')?.valueOf() as Gender
@@ -30,14 +34,6 @@ export default async function updateGeneralProfile(formData: FormData, pathToRev
 
 
   if (!formName || !formGender) {
-    return;
-  }
-
-  // get account
-  await mongoose;
-  const account = await AccountModel.findById(userId).exec();
-
-  if (!account) {
     return;
   }
 

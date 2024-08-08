@@ -30,7 +30,7 @@ export default async function updateFriendsProfile(formData: FormData, pathToRev
 
   // get account
   await mongoose;
-  const account = await AccountModel.findById(userId).exec();
+  const account = await AccountModel.findOne({ clerkUserId: userId }).exec();
 
   if (!account) {
     return;

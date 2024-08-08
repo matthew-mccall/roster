@@ -15,10 +15,15 @@ services:
   mongo:
     container_name: mongo
     image: mongo:latest
-    ports:
-      - 27017:27017
     volumes:
       - mongo_data:/data/db
+    env_file: ".env.local"
+
+  cloudflared:
+    container_name: cloudflared
+    network_mode: "host"
+    image: cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
 
 volumes:
   mongo_data:

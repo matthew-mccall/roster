@@ -7,6 +7,7 @@ import { StudyProfile } from './Profile/StudyProfile';
 
 export class Account
 {
+
   @prop({ required: true, type: String })
   _id!: string;
 

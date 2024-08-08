@@ -36,7 +36,7 @@ export default async function updateDatingProfile(formData: FormData, pathToReva
 
   // get user account
   await mongoose;
-  const account = await AccountModel.findById(userId).exec();
+  const account = await AccountModel.findOne({ clerkUserId: userId }).exec();
 
   if (!account) {
     return;

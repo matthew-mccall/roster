@@ -9,9 +9,9 @@ export class GeneralProfile
   @prop({ required: true, type: Number })
   public gender!: Gender;
 
-  @prop({ required: true })
+  @prop({ required: true, type: () => [String] })
   public interests!: string[]
 
-  @prop({ required: true })
+  @prop({ required: true, type: () => [String] })
   public dislikes!: string[]
 }

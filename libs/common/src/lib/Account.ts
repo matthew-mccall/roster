@@ -8,7 +8,7 @@ import { StudyProfile } from './Profile/StudyProfile';
 export class Account
 {
   @prop({ required: true })
-  _id!: string;
+  public clerkUserId!: string;
 
   @prop({ type: () => GeneralProfile})
   public generalProfile?: GeneralProfile;

@@ -133,15 +133,15 @@ export default async function Matching({ params }: { params: { category: string 
     pool = new MatchingPoolModel({ type: params.category, left: [], right: [] });
   }
 
-  if (!pool.left.includes(account._id) && !pool.right.includes(account._id)) {
+  if (!pool.left.includes(account.clerkUserId) && !pool.right.includes(account.clerkUserId)) {
     switch (params.category) {
       case categories.Roommates.route:
         if (pool.left.length < pool.right.length) {
           profile.poolSide = MatchingPoolSide.Left;
-          pool.left.push(account._id);
+          pool.left.push(account.clerkUserId);
         } else {
           profile.poolSide = MatchingPoolSide.Right;
-          pool.right.push(account._id);
+          pool.right.push(account.clerkUserId);
         }
         break;
       case categories.Dating.route:
@@ -159,8 +159,11 @@ export default async function Matching({ params }: { params: { category: string 
 
   const [user1Ref, user2Ref] = getUniqueCandidates(candidates, [account._id]);
 
-  const user1 = await AccountModel.findById(user1Ref).exec();
-  const user2 = await AccountModel.findById(user2Ref).exec();
+  // TODO: Better solution may be to build a queue and pop people off the queue, to make sure we go through everyone before we repeat
+  const user1 = await AccountModel.findOne({ clerkUserId: user1Ref }).exec();
+  const user2 = await AccountModel.findOne({ clerkUserId: user2Ref }).exec();
+  // const user1 = null;
+  // const user2 = null;
 
   if (!user1 || !user2) {
     return (

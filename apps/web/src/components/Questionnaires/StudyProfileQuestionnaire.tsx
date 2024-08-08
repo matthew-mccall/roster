@@ -16,11 +16,11 @@ export default function StudyProfileQuestionnaire({ studyProfile, pathToRevalida
     <Form action={formData => updateStudyProfile(formData, pathToRevalidate)}>
       <FormGroup className="mb-3" controlId="formBio">
         <Form.Label>Bio</Form.Label>
-        <Form.Control as="textarea" rows={3} name={"formBio"} defaultValue={studyProfile?.bio /*Destructuring doesn't work on inherited attributes*/} placeholder="Enter your bio..." />
+        <Form.Control as="textarea" rows={3} name={"formBio"} required={true} defaultValue={studyProfile?.bio /*Destructuring doesn't work on inherited attributes*/} placeholder="Enter your bio..." />
       </FormGroup>
       <FormGroup className="mb-3" controlId="formTopic">
         <FormLabel>Topic or course of study</FormLabel>
-        <FormControl name={"formTopic"} defaultValue={studyProfile?.topic} placeholder="Group topic/class" />
+        <FormControl name={"formTopic"} defaultValue={studyProfile?.topic} required={true} placeholder="Group topic/class" />
       </FormGroup>
       <FormGroup className="mb-3" controlId="formLocation">
         <FormLabel>Location</FormLabel>

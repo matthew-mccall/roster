@@ -24,7 +24,7 @@ export default function GeneralProfileQuestionnaire({ generalProfile, pathToReva
     <Form action={formData => updateGeneralProfile(formData, pathToRevalidate)}>
       <FormGroup className="mb-3" controlId="formFullName">
         <FormLabel>Full Name</FormLabel>
-        <FormControl placeholder="Enter your full name" name="formFullName" defaultValue={name} />
+        <FormControl placeholder="Enter your full name" name="formFullName" defaultValue={name} required={true} />
       </FormGroup>
       <FormGroup className="mb-3" controlId="formGender">
         <FormLabel>Gender</FormLabel>

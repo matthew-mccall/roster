@@ -1,4 +1,3 @@
-import {useState, useEffect} from 'react';
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
@@ -124,7 +123,7 @@ export default async function Matching({ params }: { params: { category: string 
 
   // const user1 = null;
   // const user2 = null;
-  
+
   async function getMatchedUserId(userId: string): Promise<string | null> {
     // Look for a match where the user is either `user1` or `user2`
     const match = await MatchModel.findOne({
@@ -174,7 +173,6 @@ export default async function Matching({ params }: { params: { category: string 
           <Form action={async () => {
             'use server'
             // submitPreference(account._id);
-            // handleSubmit(account._id);
           }} key={key}>
             <Card>
               <CardBody>
@@ -182,12 +180,10 @@ export default async function Matching({ params }: { params: { category: string 
                 <SubmitButton>Like</SubmitButton>
               </CardBody>
             </Card>
-
           </Form>
         ))
       }
     </Stack>
   )
-  
 
 }

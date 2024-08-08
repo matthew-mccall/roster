@@ -6,7 +6,7 @@ export class RosterEntry
   @prop({ required: true, ref: () => Account })
   public account!: Ref<Account>;
 
-  @prop({ required: true })
+  @prop({ required: true, type: Number })
   public score!: number;
 }
 

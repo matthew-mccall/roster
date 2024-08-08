@@ -12,8 +12,10 @@ import { MatchingPool, MatchingPoolSide } from './lib/MatchingPool';
 import { SexualOrientation } from './SexualOrientation';
 import { DrinkOccasion } from './DrinkOccasion';
 import { Parties } from './Parties';
+import { Match } from './lib/Match';
 
-export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, MatchingPool, MatchingPoolSide, SexualOrientation, DrinkOccasion, Parties }
+
+export { Account, Roster, RosterEntry, GeneralProfile, RoommateProfile, DatingProfile, FriendsProfile, StudyProfile, Gender, Guests, MatchingPool, MatchingPoolSide, SexualOrientation, DrinkOccasion, Parties, Match }
 
 export const GeneralProfileModel = getModelForClass(GeneralProfile);
 export const RoommateProfileModel = getModelForClass(RoommateProfile);
@@ -24,3 +26,5 @@ export const AccountModel = getModelForClass(Account)
 export const RosterEntryModel = getModelForClass(RosterEntry)
 export const RosterModel = getModelForClass(Roster)
 export const MatchingPoolModel = getModelForClass(MatchingPool)
+export const MatchModel = getModelForClass(Match)
+

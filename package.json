@@ -6,7 +6,7 @@
   "private": true,
   "dependencies": {
     "@clerk/nextjs": "^5.2.0",
-    "@typegoose/typegoose": "^12.5.0",
+    "@typegoose/typegoose": "^12.6.0",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",

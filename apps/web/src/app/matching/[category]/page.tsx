@@ -1,8 +1,9 @@
+import {useState, useEffect} from 'react';
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
 import { Alert, AlertLink, Card, CardBody, CardText, Form, Stack } from 'react-bootstrap';
-import { AccountModel, MatchingPoolModel, MatchingPoolSide } from '@roster/common';
+import { AccountModel, MatchingPoolModel, MatchingPoolSide, MatchModel } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
@@ -27,9 +28,14 @@ export default async function Matching({ params }: { params: { category: string 
   if (!account) {
     return;
   }
+  // const router = useRouter();
 
+  // async function handleSubmit(accountId: string) {
+  //   router.push('/matching/results');
+  // }
   async function submitPreference(userID: string) {
     // TODO: Calculate ELO, update roster entries
+
   }
 
   if (!account || !account.generalProfile) {
@@ -115,8 +121,40 @@ export default async function Matching({ params }: { params: { category: string 
   // TODO: Better solution may be to build a queue and pop people off the queue, to make sure we go through everyone before we repeat
   const user1 = await AccountModel.findById(user1Ref).exec();
   const user2 = await AccountModel.findById(user2Ref).exec();
+
   // const user1 = null;
   // const user2 = null;
+  
+  async function getMatchedUserId(userId: string): Promise<string | null> {
+    // Look for a match where the user is either `user1` or `user2`
+    const match = await MatchModel.findOne({
+      $or: [
+        { user1: userId },
+        { user2: userId }
+      ],
+      type: params.category
+    }).exec();
+  
+    if (!match) {
+      return null;
+    }
+  
+    // Determine the matched user ID
+    const matchedUserId = match.user1.toString() === userId ? match.user2.toString() : match.user1.toString();
+    return matchedUserId;
+  }
+
+  const matchedUserId = await getMatchedUserId(account._id);
+  if (matchedUserId) {
+    return (
+      <div className={"text-center"}>
+        <SignedIn>
+          <h1 className={"text-primary fw-semibold display-1"}>Match Found!</h1>
+          <p className={'lead'}>You are matched with {matchedUserId}</p>
+        </SignedIn>
+      </div>
+    );
+  }
 
   if (!user1 || !user2) {
     return (
@@ -136,6 +174,7 @@ export default async function Matching({ params }: { params: { category: string 
           <Form action={async () => {
             'use server'
             // submitPreference(account._id);
+            // handleSubmit(account._id);
           }} key={key}>
             <Card>
               <CardBody>
@@ -143,10 +182,12 @@ export default async function Matching({ params }: { params: { category: string 
                 <SubmitButton>Like</SubmitButton>
               </CardBody>
             </Card>
+
           </Form>
         ))
       }
     </Stack>
   )
+  
 
 }

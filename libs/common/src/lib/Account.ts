@@ -7,7 +7,7 @@ import { StudyProfile } from './Profile/StudyProfile';
 
 export class Account
 {
-  @prop({ required: true })
+  @prop({ required: true, type: String })
   public clerkUserId!: string;
 
   @prop({ type: () => GeneralProfile})

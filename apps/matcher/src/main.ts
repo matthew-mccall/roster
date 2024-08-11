@@ -131,12 +131,12 @@ async function main() {
   
       // Fetch all related accounts
       const accountIds = [...matchingPool.left, ...matchingPool.right];
-      const accountDocs = await AccountModel.find({ _id: { $in: accountIds } }).exec();
+      const accountDocs = await AccountModel.find({ clerkUserId: { $in: accountIds } }).exec();
   
       // Create a map of account IDs to account documents
       const accounts = new Map();
       for (const account of accountDocs) {
-        accounts.set(account._id.toString(), account);
+        accounts.set(account.clerkUserId, account);
       }
   
       // Run the Stable Marriage Algorithm for the current category
@@ -169,8 +169,7 @@ async function main() {
     console.error('Error during execution:', error);
   } finally {
     mongoose.disconnect();
-  }
-  
+  } 
 }
 
 

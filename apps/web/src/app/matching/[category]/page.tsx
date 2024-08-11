@@ -1,7 +1,10 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
-import { Alert, AlertLink, Card, CardBody, CardText, Col, Form, Row } from 'react-bootstrap';
+import nodemailer from 'nodemailer';
+import { Clerk } from '@clerk/clerk-js';
+import { createClerkClient } from '@clerk/backend';
+import { Alert, AlertLink, Card, CardBody, CardText, Col, Form, Row, Stack } from 'react-bootstrap';
 import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, MatchModel } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
@@ -12,17 +15,19 @@ import DatingProfileQuestionnaire from '../../../components/Questionnaires/Datin
 import FriendsProfileQuestionnaire from '../../../components/Questionnaires/FriendsProfileQuestionnaire';
 import StudyProfileQuestionnaire from '../../../components/Questionnaires/StudyProfileQuestionnaire';
 import Image from 'next/image';
+export default async function Matching({ params }: { params: { category: string } })
+{
 
-export default async function Matching({ params }: { params: { category: string } }) {
+  const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
   const categoryRoutes = Object.entries(categories).map(([, value]) => {
-    return value.route;
-  });
+    return value.route
+  })
 
   if (!categoryRoutes.includes(params.category)) {
-    notFound();
+    notFound()
   }
 
-  const account = await getOrCreateAccount({ required: true });
+  const account = await getOrCreateAccount({ required: true })
 
   if (!account) {
     return;
@@ -63,7 +68,39 @@ export default async function Matching({ params }: { params: { category: string 
 
     await roster.save();
   }
+  async function sendEmailToUsers(user1Email: string, user2Email: string) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail', // or use your preferred email service
+        auth: {
+            user: 'chunlinfeng0920@gmail.com',
+            pass: 'bjpx qnvv musv fvez',
+        },
+    });
 
+    let mailOptions = {
+      from: 'chunlinfeng0920@gmail.com',
+      to: `${user1Email}, ${user2Email}`,
+      subject: 'You have a new match!',
+      text: 'Congratulations! You have been matched. Check your profile for more details.',
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Emails sent successfully');
+    } catch (error) {
+        console.error('Error sending emails:', error);
+    }
+}
+async function getUserEmail(clerkUserId: string): Promise<string | null> {
+    try {
+      const response = await clerkClient.users.getUser(clerkUserId);
+      // console.log(response)
+      return response.emailAddresses[0].emailAddress;
+    } catch (error) {
+        console.error('Error fetching user email from Clerk:', error);
+        return null;
+    }
+}
   function getUniqueCandidates(candidates: string[], exclude: string[]): [string, string] {
     const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate));
     if (uniqueCandidates.length < 2) {
@@ -82,11 +119,9 @@ export default async function Matching({ params }: { params: { category: string 
   if (!account || !account.generalProfile) {
     return (
       <Container>
-        <Alert variant={'secondary'}>
-          Please complete the <Link href={'/'} passHref legacyBehavior><AlertLink>general questionnaire</AlertLink></Link> first
-        </Alert>
+        <Alert variant={"secondary"}>Please complete the <Link href={"/"} passHref legacyBehavior><AlertLink>general questionnaire</AlertLink></Link> first</Alert>
       </Container>
-    );
+    )
   }
 
   let profile;
@@ -95,19 +130,19 @@ export default async function Matching({ params }: { params: { category: string 
   switch (params.category) {
     case categories.Roommates.route:
       profile = account.roommateProfile;
-      questionnaire = <RoommateProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
+      questionnaire = <RoommateProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
       break;
     case categories.Dating.route:
       profile = account.datingProfile;
-      questionnaire = <DatingProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
+      questionnaire = <DatingProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`}  />
       break;
     case categories.Friends.route:
       profile = account.friendsProfile;
-      questionnaire = <FriendsProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
+      questionnaire = <FriendsProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
       break;
     case categories['Study Groups'].route:
       profile = account.studyProfile;
-      questionnaire = <StudyProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
+      questionnaire = <StudyProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
       break;
   }
 
@@ -117,13 +152,13 @@ export default async function Matching({ params }: { params: { category: string 
         <h1>Tell us about yourself...</h1>
         {questionnaire}
       </Container>
-    );
+    )
   }
 
   let pool;
 
   if (profile.pool) {
-    pool = await MatchingPoolModel.findById(profile.pool);
+    pool = await MatchingPoolModel.findById(profile.pool)
   }
 
   if (!pool) {
@@ -131,7 +166,7 @@ export default async function Matching({ params }: { params: { category: string 
   }
 
   if (!pool) {
-    pool = new MatchingPoolModel({ type: params.category, left: [], right: [] });
+    pool = new MatchingPoolModel({ type: params.category, left: [], right: [] })
   }
 
   if (!pool.left.includes(account.clerkUserId) && !pool.right.includes(account.clerkUserId)) {
@@ -158,7 +193,8 @@ export default async function Matching({ params }: { params: { category: string 
       ? pool.right
       : pool.left;
 
-  const [user1Ref, user2Ref] = getUniqueCandidates(candidates, [account._id]);
+  const user1Ref = candidates[Math.floor(Math.random() * candidates.length)];
+  const user2Ref = candidates[Math.floor(Math.random() * candidates.length)];
 
   // TODO: Better solution may be to build a queue and pop people off the queue, to make sure we go through everyone before we repeat
 
@@ -187,8 +223,15 @@ export default async function Matching({ params }: { params: { category: string 
     return matchedUserId;
   }
 
-  const matchedUserId = await getMatchedUserId(account._id);
+  const matchedUserId = await getMatchedUserId(account.clerkUserId);
   if (matchedUserId) {
+    const user1Email = await getUserEmail(account.clerkUserId);
+    console.log(user1Email)
+    const user2Email = await getUserEmail(matchedUserId);
+    console.log(user2Email)
+    if (user1Email && user2Email) {
+        await sendEmailToUsers(user1Email, user2Email);
+    }
     return (
       <div className={"text-center"}>
         <SignedIn>
@@ -201,16 +244,14 @@ export default async function Matching({ params }: { params: { category: string 
 
   if (!user1 || !user2) {
     return (
-      <div className={'text-center'}>
+      <div className={"text-center"}>
         <SignedIn>
-          <h1 className={'text-primary fw-semibold display-1'}>The show's over</h1>
+          <h1 className={"text-primary fw-semibold display-1"}>The show&apos;s over</h1>
           <p className={'lead'}>We ran out of people to show you. Check in later.</p>
         </SignedIn>
       </div>
-    );
+    )
   }
-
-  // Initialize ELO scores if not already set
   if (!user1.elo) {
     user1.elo = 400;
     await user1.save();
@@ -219,6 +260,7 @@ export default async function Matching({ params }: { params: { category: string 
     user2.elo = 400;
     await user2.save();
   }
+
 
   return (
     <Container>
@@ -233,7 +275,7 @@ export default async function Matching({ params }: { params: { category: string 
               }}
             >
               <Card style={{ width: '100%', height: '500px', marginBottom: '20px', position: 'relative' }}>
-                <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" />
+                {/* <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" /> */}
                 <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                   <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{account.generalProfile?.name}</CardText>
                   <CardText style={{ fontSize: '1rem', color: 'white' }}>Gender: {account.generalProfile?.gender}</CardText>
@@ -254,4 +296,5 @@ export default async function Matching({ params }: { params: { category: string 
       </Row>
     </Container>
   );
+
 }

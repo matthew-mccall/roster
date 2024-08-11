@@ -1,7 +1,7 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
-import { Alert, AlertLink, Card, CardBody, CardText, Col, Form, Row } from 'react-bootstrap';
+import { Alert, AlertLink, Card, CardBody, CardText, CardTitle, Col, Form, Row } from 'react-bootstrap';
 import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
@@ -63,10 +63,10 @@ export default async function Matching({ params }: { params: { category: string 
     await roster.save();
   }
 
-  function getUniqueCandidates(candidates: string[], exclude: string[]): [string, string] {
+  function getUniqueCandidates(candidates: string[], exclude: string[]): [string | null, string | null] {
     const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate));
     if (uniqueCandidates.length < 2) {
-      throw new Error("Not enough unique candidates available");
+      return [null, null]
     }
 
     let user1Ref, user2Ref;
@@ -169,7 +169,7 @@ export default async function Matching({ params }: { params: { category: string 
     return (
       <div className={'text-center'}>
         <SignedIn>
-          <h1 className={'text-primary fw-semibold display-1'}>The show's over</h1>
+          <h1 className={'text-primary fw-semibold display-1'}>The show&apos;s over</h1>
           <p className={'lead'}>We ran out of people to show you. Check in later.</p>
         </SignedIn>
       </div>
@@ -198,13 +198,12 @@ export default async function Matching({ params }: { params: { category: string 
                 window.location.reload(); // Trigger re-render by reloading the page
               }}
             >
-              <Card style={{ width: '100%', height: '500px', marginBottom: '20px', position: 'relative' }}>
-                <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" />
-                <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                  <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{account.generalProfile?.name}</CardText>
-                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Gender: {account.generalProfile?.gender}</CardText>
-                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Interests: {account.generalProfile?.interests.join(', ')}</CardText>
-                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Dislikes: {account.generalProfile?.dislikes.join(', ')}</CardText>
+              <Card>
+                <CardBody className="d-flex flex-column justify-content-end align-items-start">
+                  <CardTitle>{account.generalProfile?.name}</CardTitle>
+                  <CardText>Gender: {account.generalProfile?.gender}</CardText>
+                  <CardText>Interests: {account.generalProfile?.interests.join(', ')}</CardText>
+                  <CardText>Dislikes: {account.generalProfile?.dislikes.join(', ')}</CardText>
                   {account.roommateProfile && (
                     <>
                       {/* <CardText style={{ fontSize: '1rem', color: 'white' }}>Roommate Profile Details</CardText> */}

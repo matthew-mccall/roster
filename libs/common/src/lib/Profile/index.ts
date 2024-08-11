@@ -7,7 +7,7 @@ export default abstract class Profile
   @prop({ required: true, ref: () => Roster })
   public roster!: Roster
 
-  @prop({ required: true })
+  @prop({ required: true, type: String })
   public bio!: string
 
   @prop({ ref: () => MatchingPool })

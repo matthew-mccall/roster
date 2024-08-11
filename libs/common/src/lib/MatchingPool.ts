@@ -8,7 +8,7 @@ export enum MatchingPoolSide {
 
 export class MatchingPool
 {
-  @prop({ required: true })
+  @prop({ required: true, type: String })
   public type!: string;
 
   @prop({ required: true, ref: () => Account, type: () => String })

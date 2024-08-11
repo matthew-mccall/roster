@@ -1,7 +1,7 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
-import { Alert, AlertLink, Card, CardBody, CardText, Col, Form, Row } from 'react-bootstrap';
+import { Alert, AlertLink, Card, CardBody, CardText, CardTitle, Col, Form, Row } from 'react-bootstrap';
 import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, Gender } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
@@ -63,7 +63,7 @@ export default async function Matching({ params }: { params: { category: string 
     await roster.save();
   }
 
-  function getUniqueCandidates(candidates: string[], exclude: string[]): [string, string] {
+  function getUniqueCandidates(candidates: string[], exclude: string[]): [string | null, string | null] {
     const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate));
     if (uniqueCandidates.length < 2) {
       // throw new Error("Not enough unique candidates available");
@@ -196,7 +196,7 @@ export default async function Matching({ params }: { params: { category: string 
     return (
       <div className={'text-center'}>
         <SignedIn>
-          <h1 className={'text-primary fw-semibold display-1'}>The show's over</h1>
+          <h1 className={'text-primary fw-semibold display-1'}>The show&apos;s over</h1>
           <p className={'lead'}>We ran out of people to show you. Check in later.</p>
         </SignedIn>
       </div>

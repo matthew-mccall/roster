@@ -2,7 +2,7 @@ import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
 import { Alert, AlertLink, Card, CardBody, CardText, CardTitle, Col, Form, Row } from 'react-bootstrap';
-import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry } from '@roster/common';
+import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, Gender } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
@@ -66,7 +66,9 @@ export default async function Matching({ params }: { params: { category: string 
   function getUniqueCandidates(candidates: string[], exclude: string[]): [string | null, string | null] {
     const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate));
     if (uniqueCandidates.length < 2) {
-      return [null, null]
+      // throw new Error("Not enough unique candidates available");
+      // prevents errors in the development environment when there are fewer candidates available
+      return [null, null];
     }
 
     let user1Ref, user2Ref;
@@ -145,6 +147,31 @@ export default async function Matching({ params }: { params: { category: string 
         }
         break;
       case categories.Dating.route:
+        if (account.generalProfile.gender == Gender.Male) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
+        break;
+      case categories.Friends.route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
+        break;
+      case categories['Study Groups'].route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
         break;
     }
   }
@@ -198,12 +225,26 @@ export default async function Matching({ params }: { params: { category: string 
                 window.location.reload(); // Trigger re-render by reloading the page
               }}
             >
-              <Card>
-                <CardBody className="d-flex flex-column justify-content-end align-items-start">
-                  <CardTitle>{account.generalProfile?.name}</CardTitle>
-                  <CardText>Gender: {account.generalProfile?.gender}</CardText>
-                  <CardText>Interests: {account.generalProfile?.interests.join(', ')}</CardText>
-                  <CardText>Dislikes: {account.generalProfile?.dislikes.join(', ')}</CardText>
+              <Card style={{ width: '100%', height: '500px', marginBottom: '20px', position: 'relative' }}>
+                <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" />
+                <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                  <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{account.generalProfile?.name}</CardText>
+                  <CardText style={{ fontSize: '1rem', color: 'white' }}>
+                    Gender: {(() => {
+                    const gender = account.generalProfile?.gender;
+                    if (gender === 1) {
+                      return "Male";
+                    } else if (gender === 2) {
+                      return "Female";
+                    } else if (gender === 3) {
+                      return "Non-Binary";
+                    } else {
+                      return "Other";
+                    }
+                  })()}
+                  </CardText>
+                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Interests: {account.generalProfile?.interests.join(', ')}</CardText>
+                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Dislikes: {account.generalProfile?.dislikes.join(', ')}</CardText>
                   {account.roommateProfile && (
                     <>
                       {/* <CardText style={{ fontSize: '1rem', color: 'white' }}>Roommate Profile Details</CardText> */}

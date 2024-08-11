@@ -17,7 +17,7 @@ export default function FriendsProfileQuestionnaire({ friendsProfile, pathToReva
     <Form action={formData => updateFriendsProfile(formData, pathToRevalidate)}>
       <FormGroup className="mb-3" controlId="formBio">
         <Form.Label>Bio</Form.Label>
-        <Form.Control as="textarea" rows={3} name={"formBio"} defaultValue={friendsProfile?.bio /*Destructuring doesn't work on inherited attributes*/} placeholder="Enter your bio..." />
+        <Form.Control as="textarea" rows={3} name={"formBio"} defaultValue={friendsProfile?.bio /*Destructuring doesn't work on inherited attributes*/} required={true} placeholder="Enter your bio..." />
       </FormGroup>
       <FormGroup className="mb-3" controlId="formActivities">
         <FormLabel>What are some activities you enjoy?</FormLabel>

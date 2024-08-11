@@ -147,6 +147,31 @@ export default async function Matching({ params }: { params: { category: string 
         }
         break;
       case categories.Dating.route:
+        if (account.generalProfile.gender == Gender.Male) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
+        break;
+      case categories.Friends.route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
+        break;
+      case categories['Study Groups'].route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
         break;
     }
   }

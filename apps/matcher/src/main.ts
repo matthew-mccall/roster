@@ -26,10 +26,8 @@ export async function connectToDatabase() {
   }
 }
 
-function stableMarriage(roommatePool: MatchingPool, accounts: Map<string, Account>) {
-  const { left, right } = roommatePool;
-  console.log("roommate pool:",roommatePool);
-  console.log(accounts);
+function stableMarriage(matchingPool: MatchingPool, accounts: Map<string, Account>) {
+  const { left, right } = matchingPool;
 
   // Create fake matches
   const fakeMatches = new Map<string, string>();
@@ -45,9 +43,9 @@ function stableMarriage(roommatePool: MatchingPool, accounts: Map<string, Accoun
 
   return { matches: fakeMatches };
 }
-// function stableMarriage(roommatePool: MatchingPool, accounts: Map<string, Account>) {
-//   const { left, right } = roommatePool;
-//   console.log(roommatePool);
+// function stableMarriage(matchingPool: MatchingPool, accounts: Map<string, Account>) {
+//   const { left, right } = matchingPool;
+//   console.log(matchingPool);
 //   console.log(accounts);
 //   const leftProposals = new Map<string, number>();
 //   const rightPartners = new Map<string, string | null>();
@@ -171,7 +169,6 @@ async function main() {
     mongoose.disconnect();
   } 
 }
-
 
 // Call the main function
 main().catch(console.error);

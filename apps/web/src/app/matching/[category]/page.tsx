@@ -91,16 +91,16 @@ export default async function Matching({ params }: { params: { category: string 
         console.error('Error sending emails:', error);
     }
 }
-async function getUserEmail(clerkUserId: string): Promise<string | null> {
-    try {
-      const response = await clerkClient.users.getUser(clerkUserId);
-      // console.log(response)
-      return response.emailAddresses[0].emailAddress;
-    } catch (error) {
-        console.error('Error fetching user email from Clerk:', error);
-        return null;
-    }
-}
+  async function getUserEmail(clerkUserId: string): Promise<string | null> {
+      try {
+        const response = await clerkClient.users.getUser(clerkUserId);
+        // console.log(response)
+        return response.emailAddresses[0].emailAddress;
+      } catch (error) {
+          console.error('Error fetching user email from Clerk:', error);
+          return null;
+      }
+  }
   function getUniqueCandidates(candidates: string[], exclude: string[]): [string, string] {
     const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate));
     if (uniqueCandidates.length < 2) {
@@ -181,6 +181,31 @@ async function getUserEmail(clerkUserId: string): Promise<string | null> {
         }
         break;
       case categories.Dating.route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
+        break;
+      case categories.Friends.route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
+        break;
+      case categories['Study Groups'].route:
+        if (pool.left.length < pool.right.length) {
+          profile.poolSide = MatchingPoolSide.Left;
+          pool.left.push(account.clerkUserId);
+        } else {
+          profile.poolSide = MatchingPoolSide.Right;
+          pool.right.push(account.clerkUserId);
+        }
         break;
     }
   }

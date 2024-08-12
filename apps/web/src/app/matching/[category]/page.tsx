@@ -1,6 +1,20 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
+import {
+  Alert,
+  AlertLink,
+  Card,
+  CardBody,
+  CardHeader,
+  CardImg,
+  CardText,
+  CardTitle,
+  Col,
+  Form,
+  Row
+} from 'react-bootstrap';
+import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, Gender } from '@roster/common';
 import nodemailer from 'nodemailer';
 import { createClerkClient } from '@clerk/backend';
 import { Alert, AlertLink, Card, CardBody, CardText, CardTitle, Col, Form, Row, Stack } from 'react-bootstrap';
@@ -14,8 +28,6 @@ import DatingProfileQuestionnaire from '../../../components/Questionnaires/Datin
 import FriendsProfileQuestionnaire from '../../../components/Questionnaires/FriendsProfileQuestionnaire';
 import StudyProfileQuestionnaire from '../../../components/Questionnaires/StudyProfileQuestionnaire';
 import Image from 'next/image';
-export default async function Matching({ params }: { params: { category: string } })
-{
 
   const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
   const categoryRoutes = Object.entries(categories).map(([, value]) => {
@@ -31,7 +43,6 @@ export default async function Matching({ params }: { params: { category: string 
   if (!account) {
     return;
   }
-  // const router = useRouter();
 
   async function submitPreference(userID: string, preferredUserID: string) {
     await calculateElo(userID, preferredUserID);
@@ -110,11 +121,11 @@ export default async function Matching({ params }: { params: { category: string 
       ],
       type: params.category
     }).exec();
-  
+
     if (!match) {
       return null;
     }
-  
+
     // Determine the matched user ID
     const matchedUserId = match.user1.toString() === userId ? match.user2.toString() : match.user1.toString();
     return matchedUserId;
@@ -152,19 +163,19 @@ export default async function Matching({ params }: { params: { category: string 
   switch (params.category) {
     case categories.Roommates.route:
       profile = account.roommateProfile;
-      questionnaire = <RoommateProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
+      questionnaire = <RoommateProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
     case categories.Dating.route:
       profile = account.datingProfile;
-      questionnaire = <DatingProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`}  />
+      questionnaire = <DatingProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
     case categories.Friends.route:
       profile = account.friendsProfile;
-      questionnaire = <FriendsProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
+      questionnaire = <FriendsProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
     case categories['Study Groups'].route:
       profile = account.studyProfile;
-      questionnaire = <StudyProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />
+      questionnaire = <StudyProfileQuestionnaire pathToRevalidate={`/matching/${params.category}`} />;
       break;
   }
 
@@ -174,7 +185,7 @@ export default async function Matching({ params }: { params: { category: string 
         <h1>Tell us about yourself...</h1>
         {questionnaire}
       </Container>
-    )
+    );
   }
 
   let pool;
@@ -190,6 +201,7 @@ export default async function Matching({ params }: { params: { category: string 
   if (!pool) {
     pool = new MatchingPoolModel({ type: params.category, left: [], right: [] })
   }
+
   if (!pool.left.includes(account.clerkUserId) && !pool.right.includes(account.clerkUserId)) {
     switch (params.category) {
       case categories.Roommates.route:
@@ -202,7 +214,7 @@ export default async function Matching({ params }: { params: { category: string 
         }
         break;
       case categories.Dating.route:
-        if (account.generalProfile.gender == 1) {
+        if (account.generalProfile.gender == Gender.Male) {
           profile.poolSide = MatchingPoolSide.Left;
           pool.left.push(account.clerkUserId);
         } else {
@@ -297,13 +309,13 @@ export default async function Matching({ params }: { params: { category: string 
 
   if (!user1 || !user2) {
     return (
-      <div className={"text-center"}>
+      <div className={'text-center'}>
         <SignedIn>
-          <h1 className={'text-primary fw-semibold display-1'}>The show's over</h1>
+          <h1 className={'text-primary fw-semibold display-1'}>The show&apos;s over</h1>
           <p className={'lead'}>We ran out of people to show you. Check in later.</p>
         </SignedIn>
       </div>
-    )
+    );
   }
 
   if (!user1.elo) {
@@ -314,7 +326,6 @@ export default async function Matching({ params }: { params: { category: string 
     user2.elo = 400;
     await user2.save();
   }
-
 
   return (
     <Container>
@@ -328,33 +339,34 @@ export default async function Matching({ params }: { params: { category: string 
                 window.location.reload(); // Trigger re-render by reloading the page
               }}
             >
-              <Card style={{ width: '100%', height: '500px', marginBottom: '20px', position: 'relative' }}>
-                {/* <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" /> */}
-                <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                  <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{account.generalProfile?.name}</CardText>
-                  <CardText style={{ fontSize: '1rem', color: 'white' }}>
+              <Card>
+                <CardImg variant={"top"} src={`https://placehold.co/400?text=Picture+of+${account.generalProfile.name.replace(' ', '+')}`} />
+                <CardBody>
+                  <CardTitle>{account.generalProfile?.name}</CardTitle>
+                  <CardText>
                     Gender: {(() => {
                     const gender = account.generalProfile?.gender;
                     if (gender === 1) {
-                      return "Male";
+                      return 'Male';
                     } else if (gender === 2) {
-                      return "Female";
+                      return 'Female';
                     } else if (gender === 3) {
-                      return "Non-Binary";
+                      return 'Non-Binary';
                     } else {
-                      return "Other";
+                      return 'Other';
                     }
                   })()}
+                    <br />
+                    Interests: {account.generalProfile?.interests.join(', ')}
+                    <br />
+                    Dislikes: {account.generalProfile?.dislikes.join(', ')}
                   </CardText>
-                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Interests: {account.generalProfile?.interests.join(', ')}</CardText>
-                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Dislikes: {account.generalProfile?.dislikes.join(', ')}</CardText>
-                  {account.roommateProfile && (
-                    <>
-                      {/* <CardText style={{ fontSize: '1rem', color: 'white' }}>Roommate Profile Details</CardText> */}
-                      {/* Add additional RoommateProfile attributes here */}
-                    </>
-                  )}
-                  <SubmitButton className="w-100">Like</SubmitButton>
+                    {account.roommateProfile && params.category == categories.Roommates.route && (
+                      <CardText>
+                        Bio: {account.roommateProfile.bio}
+                      </CardText>
+                    )}
+                    <SubmitButton className="w-100">Like</SubmitButton>
                 </CardBody>
               </Card>
             </Form>
@@ -363,5 +375,4 @@ export default async function Matching({ params }: { params: { category: string 
       </Row>
     </Container>
   );
-
 }

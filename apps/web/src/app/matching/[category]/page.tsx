@@ -1,24 +1,9 @@
 import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
-import {
-  Alert,
-  AlertLink,
-  Card,
-  CardBody,
-  CardHeader,
-  CardImg,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  Row
-} from 'react-bootstrap';
-import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, Gender } from '@roster/common';
-import nodemailer from 'nodemailer';
-import { createClerkClient } from '@clerk/backend';
-import { Alert, AlertLink, Card, CardBody, CardText, CardTitle, Col, Form, Row, Stack } from 'react-bootstrap';
-import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, MatchModel, Gender } from '@roster/common';
+// import nodemailer from 'nodemailer';
+import { Alert, AlertLink, Card, CardBody, CardImg, CardText, CardTitle, Col, Form, Row } from 'react-bootstrap';
+import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterEntry, Gender } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
@@ -27,9 +12,9 @@ import SubmitButton from '../../../components/SubmitButton';
 import DatingProfileQuestionnaire from '../../../components/Questionnaires/DatingProfileQuestionnaire';
 import FriendsProfileQuestionnaire from '../../../components/Questionnaires/FriendsProfileQuestionnaire';
 import StudyProfileQuestionnaire from '../../../components/Questionnaires/StudyProfileQuestionnaire';
-import Image from 'next/image';
 
-  const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
+export default async function Matching({ params }: { params: { category: string } })
+{
   const categoryRoutes = Object.entries(categories).map(([, value]) => {
     return value.route
   })
@@ -46,89 +31,85 @@ import Image from 'next/image';
 
   async function submitPreference(userID: string, preferredUserID: string) {
     await calculateElo(userID, preferredUserID);
-    await updateRoster(userID, preferredUserID);
+    // await updateRoster(userID, preferredUserID);
   }
 
-  async function calculateElo(userID: string, preferredUserID: string) {
-    const user = await AccountModel.findById(userID).exec();
-    const preferredUser = await AccountModel.findById(preferredUserID).exec();
+  async function calculateElo(losingUserId: string, winningUserId: string) {
+    const losingUser = await AccountModel.findById(losingUserId).exec();
+    const winningUser = await AccountModel.findById(winningUserId).exec();
 
-    if (user && preferredUser) {
-      const k = 32;
-      const expectedScore = 1 / (1 + Math.pow(10, (preferredUser.elo - user.elo) / 400));
-      const newElo = user.elo + k * (1 - expectedScore);
-
-      user.elo = newElo;
-      await user.save();
+    if (!losingUser || !winningUser) {
+      return;
     }
+
+    let losingUserEntry = losingUser.roommateProfile!.roster.entries.find(entry => {
+      return entry.account._id == losingUser._id;
+    })
+
+    if (!losingUserEntry) {
+      losingUserEntry = new RosterEntry();
+      losingUserEntry.account = losingUser._id;
+      losingUserEntry.score = 400;
+    }
+
+    let winningUserEntry = winningUser.roommateProfile!.roster.entries.find(entry => {
+      return entry.account._id == winningUser._id;
+    })
+
+    if (!winningUserEntry) {
+      winningUserEntry = new RosterEntry();
+      winningUserEntry.account = winningUser._id;
+      winningUserEntry.score = 400;
+    }
+
+    const k = 32;
+    const expectedScore = 1 / (1 + Math.pow(10, (winningUserEntry.score - losingUserEntry.score) / 400));
+    const newElo = losingUserEntry.score + k * (1 - expectedScore);
+
+    losingUserEntry.score = newElo;
+    losingUser.roommateProfile!.roster.entries.push(losingUserEntry);
+    losingUser.save();
+
+    // TODO: Calculate ELO for winning user
   }
 
-  async function updateRoster(userID: string, preferredUserID: string) {
-    let roster = await RosterModel.findOne({ account: userID }).exec();
-    if (!roster) {
-      roster = new RosterModel({ account: userID, entries: [] });
-    }
-
-    const entryIndex = roster.entries.findIndex(entry => entry.account.toString() === preferredUserID);
-    if (entryIndex > -1) {
-      roster.entries[entryIndex].score += 1;
-    } else {
-      roster.entries.push({ account: preferredUserID, score: 1 });
-    }
-
-    await roster.save();
-  }
+  // async function updateRoster(userID: string, preferredUserID: string) {
+  //   let roster = await RosterModel.findOne({ account: userID }).exec();
+  //   if (!roster) {
+  //     roster = new RosterModel({ account: userID, entries: [] });
+  //   }
+  //
+  //   const entryIndex = roster.entries.findIndex(entry => entry.account.toString() === preferredUserID);
+  //   if (entryIndex > -1) {
+  //     roster.entries[entryIndex].score += 1;
+  //   } else {
+  //     roster.entries.push({ account: preferredUserID, score: 1 });
+  //   }
+  //
+  //   await roster.save();
+  // }
   async function sendEmailToUsers(user1Email: string, user2Email: string) {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail', // or use your preferred email service
-        auth: {
-            user: 'chunlinfeng0920@gmail.com',
-            pass: 'bjpx qnvv musv fvez',
-        },
-    });
-
-    let mailOptions = {
-      from: 'chunlinfeng0920@gmail.com',
-      to: `${user1Email}, ${user2Email}`,
-      subject: 'You have a new match!',
-      text: 'Congratulations! You have been matched. Check your profile for more details.',
-    };
-
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log('Emails sent successfully');
-    } catch (error) {
-        console.error('Error sending emails:', error);
-    }
-  }
-  async function getUserEmail(clerkUserId: string): Promise<string | null> {
-      try {
-        const response = await clerkClient.users.getUser(clerkUserId);
-        // console.log(response)
-        return response.emailAddresses[0].emailAddress;
-      } catch (error) {
-          console.error('Error fetching user email from Clerk:', error);
-          return null;
-      }
-  }
-
-  async function getMatchedUserId(userId: string): Promise<string | null> {
-    // Look for a match where the user is either `user1` or `user2`
-    const match = await MatchModel.findOne({
-      $or: [
-        { user1: userId },
-        { user2: userId }
-      ],
-      type: params.category
-    }).exec();
-
-    if (!match) {
-      return null;
-    }
-
-    // Determine the matched user ID
-    const matchedUserId = match.user1.toString() === userId ? match.user2.toString() : match.user1.toString();
-    return matchedUserId;
+    // const transporter = nodemailer.createTransport({
+    //     service: 'gmail', // or use your preferred email service
+    //     auth: {
+    //         user: 'chunlinfeng0920@gmail.com',
+    //         pass: 'bjpx qnvv musv fvez',
+    //     },
+    // });
+    //
+    // let mailOptions = {
+    //   from: 'chunlinfeng0920@gmail.com',
+    //   to: `${user1Email}, ${user2Email}`,
+    //   subject: 'You have a new match!',
+    //   text: 'Congratulations! You have been matched. Check your profile for more details.',
+    // };
+    //
+    // try {
+    //     await transporter.sendMail(mailOptions);
+    //     console.log('Emails sent successfully');
+    // } catch (error) {
+    //     console.error('Error sending emails:', error);
+    // }
   }
 
   function getUniqueCandidates(candidates: string[], exclude: string[]): [string | null, string | null] {
@@ -257,56 +238,6 @@ import Image from 'next/image';
   const user1 = await AccountModel.findOne({ clerkUserId: user1Ref }).exec();
   const user2 = await AccountModel.findOne({ clerkUserId: user2Ref }).exec();
 
-  // const user1 = null;
-  // const user2 = null;
-
-  const matchedUserId = await getMatchedUserId(account.clerkUserId);
-  const matchedUserAccount = await AccountModel.findOne({clerkUserId: matchedUserId});
-  if (matchedUserId) {
-    const user1Email = await getUserEmail(account.clerkUserId);
-    const user2Email = await getUserEmail(matchedUserId);
-    if (user1Email && user2Email) {
-        await sendEmailToUsers(user1Email, user2Email);
-    }
-    return (
-      <div className={"text-center"}>
-        <SignedIn>
-          <h1 className={"text-primary fw-semibold display-1"}>Match Found!</h1>
-          <p className={'lead'}>You are matched with {matchedUserAccount?.generalProfile.name}!</p>
-          <p className={'lead'}>Contact email: {getUserEmail(matchedUserId)} </p>
-          <Card style={{ width: '30%', height: '500px', margin: '20px auto', position: 'relative' }}>
-            {/* <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" /> */}
-            <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-              <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{matchedUserAccount.generalProfile?.name}</CardText>
-              <CardText style={{ fontSize: '1rem', color: 'white' }}>
-                    Gender: {(() => {
-                    const gender = account.generalProfile?.gender;
-                    if (gender === 0) {
-                      return "Male";
-                    } else if (gender === 1) {
-                      return "Female";
-                    } else if (gender === 2) {
-                      return "Non-Binary";
-                    } else {
-                      return "Other";
-                    }
-                  })()}
-              </CardText>
-              <CardText style={{ fontSize: '1rem', color: 'white' }}>Interests: {matchedUserAccount.generalProfile?.interests.join(', ')}</CardText>
-              <CardText style={{ fontSize: '1rem', color: 'white' }}>Dislikes: {matchedUserAccount.generalProfile?.dislikes.join(', ')}</CardText>
-              {account.roommateProfile && (
-                <>
-                  {/* <CardText style={{ fontSize: '1rem', color: 'white' }}>Roommate Profile Details</CardText> */}
-                  {/* Add additional RoommateProfile attributes here */}
-                </>
-              )}
-            </CardBody>
-          </Card>
-        </SignedIn>
-      </div>
-    );
-  }
-
   if (!user1 || !user2) {
     return (
       <div className={'text-center'}>
@@ -318,14 +249,14 @@ import Image from 'next/image';
     );
   }
 
-  if (!user1.elo) {
-    user1.elo = 400;
-    await user1.save();
-  }
-  if (!user2.elo) {
-    user2.elo = 400;
-    await user2.save();
-  }
+  // if (!user1.elo) {
+  //   user1.elo = 400;
+  //   await user1.save();
+  // }
+  // if (!user2.elo) {
+  //   user2.elo = 400;
+  //   await user2.save();
+  // }
 
   return (
     <Container>
@@ -335,7 +266,7 @@ import Image from 'next/image';
             <Form
               action={async () => {
                 'use server';
-                await submitPreference(profile._id, account._id);
+                await submitPreference(profile._id, account._id as string);
                 window.location.reload(); // Trigger re-render by reloading the page
               }}
             >
@@ -374,5 +305,5 @@ import Image from 'next/image';
         ))}
       </Row>
     </Container>
-  );
+  )
 }

@@ -101,20 +101,26 @@ export default async function Matching({ params }: { params: { category: string 
           return null;
       }
   }
-  function getUniqueCandidates(candidates: string[], exclude: string[]): [string, string] {
-    const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate));
-    if (uniqueCandidates.length < 2) {
-      throw new Error("Not enough unique candidates available");
+
+  async function getMatchedUserId(userId: string): Promise<string | null> {
+    // Look for a match where the user is either `user1` or `user2`
+    const match = await MatchModel.findOne({
+      $or: [
+        { user1: userId },
+        { user2: userId }
+      ],
+      type: params.category
+    }).exec();
+  
+    if (!match) {
+      return null;
     }
-
-    let user1Ref, user2Ref;
-    do {
-      user1Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
-      user2Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
-    } while (user1Ref === user2Ref);
-
-    return [user1Ref, user2Ref];
+  
+    // Determine the matched user ID
+    const matchedUserId = match.user1.toString() === userId ? match.user2.toString() : match.user1.toString();
+    return matchedUserId;
   }
+
 
   if (!account || !account.generalProfile) {
     return (
@@ -229,31 +235,11 @@ export default async function Matching({ params }: { params: { category: string 
   // const user1 = null;
   // const user2 = null;
 
-  async function getMatchedUserId(userId: string): Promise<string | null> {
-    // Look for a match where the user is either `user1` or `user2`
-    const match = await MatchModel.findOne({
-      $or: [
-        { user1: userId },
-        { user2: userId }
-      ],
-      type: params.category
-    }).exec();
-  
-    if (!match) {
-      return null;
-    }
-  
-    // Determine the matched user ID
-    const matchedUserId = match.user1.toString() === userId ? match.user2.toString() : match.user1.toString();
-    return matchedUserId;
-  }
-
   const matchedUserId = await getMatchedUserId(account.clerkUserId);
+  const matchedUserAccount = await AccountModel.findOne({clerkUserId: matchedUserId});
   if (matchedUserId) {
     const user1Email = await getUserEmail(account.clerkUserId);
-    console.log(user1Email)
     const user2Email = await getUserEmail(matchedUserId);
-    console.log(user2Email)
     if (user1Email && user2Email) {
         await sendEmailToUsers(user1Email, user2Email);
     }
@@ -261,7 +247,24 @@ export default async function Matching({ params }: { params: { category: string 
       <div className={"text-center"}>
         <SignedIn>
           <h1 className={"text-primary fw-semibold display-1"}>Match Found!</h1>
-          <p className={'lead'}>You are matched with {matchedUserId}</p>
+          <p className={'lead'}>You are matched with {matchedUserAccount?.generalProfile.name}!</p>
+          <p className={'lead'}>Contact email: {getUserEmail(matchedUserId)} </p>
+          <Card style={{ width: '30%', height: '500px', margin: '20px auto', position: 'relative' }}>
+            {/* <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" /> */}
+            <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+              <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{matchedUserAccount.generalProfile?.name}</CardText>
+              <CardText style={{ fontSize: '1rem', color: 'white' }}>Gender: {matchedUserAccount.generalProfile?.gender}</CardText>
+              <CardText style={{ fontSize: '1rem', color: 'white' }}>Interests: {matchedUserAccount.generalProfile?.interests.join(', ')}</CardText>
+              <CardText style={{ fontSize: '1rem', color: 'white' }}>Dislikes: {matchedUserAccount.generalProfile?.dislikes.join(', ')}</CardText>
+              {account.roommateProfile && (
+                <>
+                  {/* <CardText style={{ fontSize: '1rem', color: 'white' }}>Roommate Profile Details</CardText> */}
+                  {/* Add additional RoommateProfile attributes here */}
+                </>
+              )}
+              <SubmitButton className="w-100">Like</SubmitButton>
+            </CardBody>
+          </Card>
         </SignedIn>
       </div>
     );

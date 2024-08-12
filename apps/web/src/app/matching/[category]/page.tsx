@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation';
 import nodemailer from 'nodemailer';
 import { Clerk } from '@clerk/clerk-js';
 import { createClerkClient } from '@clerk/backend';
-import { Alert, AlertLink, Card, CardBody, CardText, Col, Form, Row, Stack } from 'react-bootstrap';
-import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, MatchModel } from '@roster/common';
+import { Alert, AlertLink, Card, CardBody, CardText, CardTitle, Col, Form, Row, Stack } from 'react-bootstrap';
+import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, MatchModel, Gender } from '@roster/common';
 import getOrCreateAccount from '../../../lib/getOrCreateAccount';
 import Link from 'next/link';
 import Container from 'react-bootstrap/Container';
@@ -90,7 +90,7 @@ export default async function Matching({ params }: { params: { category: string 
     } catch (error) {
         console.error('Error sending emails:', error);
     }
-}
+  }
   async function getUserEmail(clerkUserId: string): Promise<string | null> {
       try {
         const response = await clerkClient.users.getUser(clerkUserId);
@@ -119,6 +119,23 @@ export default async function Matching({ params }: { params: { category: string 
     // Determine the matched user ID
     const matchedUserId = match.user1.toString() === userId ? match.user2.toString() : match.user1.toString();
     return matchedUserId;
+  }
+
+  function getUniqueCandidates(candidates: string[], exclude: string[]): [string | null, string | null] {
+    const uniqueCandidates = candidates.filter(candidate => !exclude.includes(candidate));
+    if (uniqueCandidates.length < 2) {
+      // throw new Error("Not enough unique candidates available");
+      // prevents errors in the development environment when there are fewer candidates available
+      return [null, null];
+    }
+
+    let user1Ref, user2Ref;
+    do {
+      user1Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
+      user2Ref = uniqueCandidates[Math.floor(Math.random() * uniqueCandidates.length)];
+    } while (user1Ref === user2Ref);
+
+    return [user1Ref, user2Ref];
   }
 
 
@@ -187,7 +204,7 @@ export default async function Matching({ params }: { params: { category: string 
         }
         break;
       case categories.Dating.route:
-        if (pool.left.length < pool.right.length) {
+        if (account.generalProfile.gender == Gender.Male) {
           profile.poolSide = MatchingPoolSide.Left;
           pool.left.push(account.clerkUserId);
         } else {
@@ -253,7 +270,20 @@ export default async function Matching({ params }: { params: { category: string 
             {/* <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" /> */}
             <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
               <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{matchedUserAccount.generalProfile?.name}</CardText>
-              <CardText style={{ fontSize: '1rem', color: 'white' }}>Gender: {matchedUserAccount.generalProfile?.gender}</CardText>
+              <CardText style={{ fontSize: '1rem', color: 'white' }}>
+                    Gender: {(() => {
+                    const gender = account.generalProfile?.gender;
+                    if (gender === 1) {
+                      return "Male";
+                    } else if (gender === 2) {
+                      return "Female";
+                    } else if (gender === 3) {
+                      return "Non-Binary";
+                    } else {
+                      return "Other";
+                    }
+                  })()}
+              </CardText>
               <CardText style={{ fontSize: '1rem', color: 'white' }}>Interests: {matchedUserAccount.generalProfile?.interests.join(', ')}</CardText>
               <CardText style={{ fontSize: '1rem', color: 'white' }}>Dislikes: {matchedUserAccount.generalProfile?.dislikes.join(', ')}</CardText>
               {account.roommateProfile && (
@@ -274,12 +304,13 @@ export default async function Matching({ params }: { params: { category: string 
     return (
       <div className={"text-center"}>
         <SignedIn>
-          <h1 className={"text-primary fw-semibold display-1"}>The show&apos;s over</h1>
+          <h1 className={'text-primary fw-semibold display-1'}>The show's over</h1>
           <p className={'lead'}>We ran out of people to show you. Check in later.</p>
         </SignedIn>
       </div>
     )
   }
+  
   if (!user1.elo) {
     user1.elo = 400;
     await user1.save();
@@ -306,7 +337,20 @@ export default async function Matching({ params }: { params: { category: string 
                 {/* <Image src={account.generalProfile?.image || '/default.png'} alt={account.generalProfile?.name} layout="fill" objectFit="cover" /> */}
                 <CardBody className="d-flex flex-column justify-content-end align-items-start" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '20px', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                   <CardText style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{account.generalProfile?.name}</CardText>
-                  <CardText style={{ fontSize: '1rem', color: 'white' }}>Gender: {account.generalProfile?.gender}</CardText>
+                  <CardText style={{ fontSize: '1rem', color: 'white' }}>
+                    Gender: {(() => {
+                    const gender = account.generalProfile?.gender;
+                    if (gender === 1) {
+                      return "Male";
+                    } else if (gender === 2) {
+                      return "Female";
+                    } else if (gender === 3) {
+                      return "Non-Binary";
+                    } else {
+                      return "Other";
+                    }
+                  })()}
+                  </CardText>
                   <CardText style={{ fontSize: '1rem', color: 'white' }}>Interests: {account.generalProfile?.interests.join(', ')}</CardText>
                   <CardText style={{ fontSize: '1rem', color: 'white' }}>Dislikes: {account.generalProfile?.dislikes.join(', ')}</CardText>
                   {account.roommateProfile && (

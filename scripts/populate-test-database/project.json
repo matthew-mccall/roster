@@ -1,0 +1,56 @@
+{
+  "name": "populate-test-database",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "scripts/populate-test-database/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/scripts/populate-test-database",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "scripts/populate-test-database/src/main.ts",
+        "tsConfig": "scripts/populate-test-database/tsconfig.app.json",
+        "assets": ["scripts/populate-test-database/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "populate-test-database:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "populate-test-database:build:development"
+        },
+        "production": {
+          "buildTarget": "populate-test-database:build:production"
+        }
+      }
+    }
+  }
+}

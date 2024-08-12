@@ -2,7 +2,6 @@ import { SignedIn } from '@clerk/nextjs';
 import categories from '../../../categories.json';
 import { notFound } from 'next/navigation';
 import nodemailer from 'nodemailer';
-import { Clerk } from '@clerk/clerk-js';
 import { createClerkClient } from '@clerk/backend';
 import { Alert, AlertLink, Card, CardBody, CardText, CardTitle, Col, Form, Row, Stack } from 'react-bootstrap';
 import { AccountModel, MatchingPoolModel, MatchingPoolSide, RosterModel, RosterEntry, MatchModel, Gender } from '@roster/common';
@@ -191,7 +190,6 @@ export default async function Matching({ params }: { params: { category: string 
   if (!pool) {
     pool = new MatchingPoolModel({ type: params.category, left: [], right: [] })
   }
-
   if (!pool.left.includes(account.clerkUserId) && !pool.right.includes(account.clerkUserId)) {
     switch (params.category) {
       case categories.Roommates.route:
@@ -204,7 +202,7 @@ export default async function Matching({ params }: { params: { category: string 
         }
         break;
       case categories.Dating.route:
-        if (account.generalProfile.gender == Gender.Male) {
+        if (account.generalProfile.gender == 1) {
           profile.poolSide = MatchingPoolSide.Left;
           pool.left.push(account.clerkUserId);
         } else {
@@ -236,14 +234,12 @@ export default async function Matching({ params }: { params: { category: string 
   profile.pool = pool;
   await Promise.all([account.save(), pool.save()]);
 
-  const candidates =
-    profile.poolSide == MatchingPoolSide.Left
-      ? pool.right
-      : pool.left;
+  const candidates = profile.poolSide == MatchingPoolSide.Left ? pool.right : pool.left;
 
-  const user1Ref = candidates[Math.floor(Math.random() * candidates.length)];
-  const user2Ref = candidates[Math.floor(Math.random() * candidates.length)];
+  // Extract string IDs from the candidates
+  const candidateIds = candidates.map(candidate => candidate.toString());
 
+  const [user1Ref, user2Ref] = getUniqueCandidates(candidateIds, [account.toString()]);
   // TODO: Better solution may be to build a queue and pop people off the queue, to make sure we go through everyone before we repeat
 
   const user1 = await AccountModel.findOne({ clerkUserId: user1Ref }).exec();
@@ -273,11 +269,11 @@ export default async function Matching({ params }: { params: { category: string 
               <CardText style={{ fontSize: '1rem', color: 'white' }}>
                     Gender: {(() => {
                     const gender = account.generalProfile?.gender;
-                    if (gender === 1) {
+                    if (gender === 0) {
                       return "Male";
-                    } else if (gender === 2) {
+                    } else if (gender === 1) {
                       return "Female";
-                    } else if (gender === 3) {
+                    } else if (gender === 2) {
                       return "Non-Binary";
                     } else {
                       return "Other";
@@ -292,7 +288,6 @@ export default async function Matching({ params }: { params: { category: string 
                   {/* Add additional RoommateProfile attributes here */}
                 </>
               )}
-              <SubmitButton className="w-100">Like</SubmitButton>
             </CardBody>
           </Card>
         </SignedIn>
@@ -310,7 +305,7 @@ export default async function Matching({ params }: { params: { category: string 
       </div>
     )
   }
-  
+
   if (!user1.elo) {
     user1.elo = 400;
     await user1.save();

@@ -167,9 +167,12 @@ async function main() {
     console.error('Error during execution:', error);
   } finally {
     mongoose.disconnect();
+
   } 
 }
 
 // Call the main function
 main().catch(console.error);
+
+
 

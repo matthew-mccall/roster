@@ -1,5 +1,4 @@
-import { prop, type Ref } from '@typegoose/typegoose';
-import { Account } from './Account';
+import { prop } from '@typegoose/typegoose';
 
 export class Match
 {
@@ -7,8 +6,8 @@ export class Match
   public type!: 'roommates' | 'dating' | 'friend' | 'studyGroup';
 
   @prop({ required: true, type: String})
-  public user1!: String;
+  public user1!: string;
 
   @prop({ required: true, type: String })
-  public user2!: String;
+  public user2!: string;
 }
